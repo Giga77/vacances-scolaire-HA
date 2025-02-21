@@ -79,9 +79,9 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
             today = datetime.now().date()
 
             if start_date <= today <= end_date:
-                state = f"{result['description']} jusqu'au {end_date.strftime('%d-%m-%Y')}"
+                state = f"{result['zones']} - Holidays"
             else:
-                state = False
+                state = f"{result['zones']} - Work"
 
             return {
                 "state": state,
