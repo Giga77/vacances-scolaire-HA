@@ -1,0 +1,6 @@
+{
+  "name": "Vacances Scolaires",
+  "country": "FR",
+  "render_readme": true,
+  "homeassistant": "2022.5.0"
+}
