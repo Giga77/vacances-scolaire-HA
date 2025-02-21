@@ -51,6 +51,7 @@ Une fois installée et configurée, l'intégration Vacances Scolaires ajoutera u
 
 ![{A6253F51-9442-4597-BD3E-47512043409A}](https://github.com/user-attachments/assets/022cba95-6d63-421d-86c7-79fc6a0977dd)
 
+PI : state; True si en vacances, False sinon
 
 ## Contribution
 
