@@ -49,7 +49,8 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
 
 Une fois installée et configurée, l'intégration Vacances Scolaires ajoutera un capteur à votre instance Home Assistant. Ce capteur affichera les informations sur les vacances en cours pour la localisation spécifiée.
 
-![{4E33C5E5-BD5C-471D-93BF-C7892A777E08}](https://github.com/user-attachments/assets/4972d202-fce9-41a5-b720-9dd1158a50bb)
+![{640F061F-260B-4A7D-846C-6729C9AE6583}](https://github.com/user-attachments/assets/f5737c24-8952-46e7-88d1-79caf85c2617)
+
 
 
 Le "state" retournera :
