@@ -77,7 +77,8 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
             start_date = datetime.fromisoformat(result['start_date']).date()
             end_date = datetime.fromisoformat(result['end_date']).date()
             today = datetime.now().date()
-
+            on_vacation = start_date <= today <= end_date  # True si en vacances
+            
             if on_vacation: 
                 state = f"{result['zones']} - Holidays"
             else:
