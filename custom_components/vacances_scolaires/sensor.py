@@ -1,29 +1,18 @@
 """Platform for sensor integration."""
-from __future__ import annotations
-
 from datetime import datetime, timedelta
 import logging
-
 import aiohttp
 import async_timeout
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-
-from .const import CONF_LOCATION, CONF_UPDATE_INTERVAL, DOMAIN
+from .const import DOMAIN, CONF_LOCATION, CONF_UPDATE_INTERVAL
 
 _LOGGER = logging.getLogger(__name__)
 
-async def async_setup_entry(
-    hass: HomeAssistant,
-    config_entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback,
-) -> None:
+async def async_setup_entry(hass, entry, async_add_entities):
     """Set up the Vacances Scolaires sensor platform."""
-    location = config_entry.data[CONF_LOCATION]
-    update_interval = config_entry.data[CONF_UPDATE_INTERVAL]
+    location = entry.data[CONF_LOCATION]
+    update_interval = entry.data[CONF_UPDATE_INTERVAL]
 
     coordinator = VacancesScolairesDataUpdateCoordinator(hass, location, update_interval)
     await coordinator.async_config_entry_first_refresh()
@@ -66,7 +55,7 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
 
     def _get_api_url(self):
         today = datetime.now().strftime('%Y-%m-%d')
-        return f"https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records?where=end_date%3E%22{today}%22&order_by=end_date%20ASC&limit=1&refine=location%3A{self.location}"
+        return f"https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records?where=end_date%3E%22{today}%22&order_by=end_date%20ASC&limit=5&refine=location%3A{self.location}"
 
     def _process_data(self, data):
         _LOGGER.debug(f"Processing data: {data}")
@@ -89,11 +78,10 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
                     "description": result['description']
                 }
             }
-        return {"state": "Aucune donnée disponible", "attributes": {}}
-            else:
-                _LOGGER.warning("No results found in API response")
+        else:
+            _LOGGER.warning("No results found in API response")
             return {"state": "Aucune donnée disponible", "attributes": {}}
-    
+
 class VacancesScolairesSensor(SensorEntity):
     """Representation of a Vacances Scolaires sensor."""
 
