@@ -81,7 +81,7 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
             if start_date <= today <= end_date:
                 state = f"{result['description']} jusqu'au {end_date.strftime('%d-%m-%Y')}"
             else:
-                state = f"Prochaines : {result['description']} {start_date.strftime('%d-%m-%Y')}"
+                state = False
 
             return {
                 "state": state,
