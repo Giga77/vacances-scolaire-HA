@@ -1,4 +1,3 @@
-"""Platform for sensor integration."""
 from datetime import datetime, timedelta
 import logging
 import aiohttp
@@ -38,31 +37,45 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
             async with async_timeout.timeout(10):
                 return await self._fetch_data()
         except Exception as err:
+            _LOGGER.error(f"Error communicating with API: {err}")
             raise UpdateFailed(f"Error communicating with API: {err}")
 
     async def _fetch_data(self):
         """Fetch data from the API."""
         url = self._get_api_url()
         _LOGGER.debug(f"Fetching data from URL: {url}")
+
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 if response.status != 200:
                     _LOGGER.error(f"API returned status code {response.status}")
-                    raise Exception(f"API returned status code {response.status}")
+                    raise UpdateFailed(f"API returned status code {response.status}")
+
                 data = await response.json()
-                _LOGGER.debug(f"Received data: {data}")
+                _LOGGER.debug(f"Raw API response: {data}")
+
                 return self._process_data(data)
 
     def _get_api_url(self):
+        """Generate the API URL."""
         today = datetime.now().strftime('%Y-%m-%d')
-        return f"https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records?where=end_date%3E%22{today}%22&order_by=end_date%20ASC&limit=5&refine=location%3A{self.location}"
+        return f"https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records?where=end_date%3E%22{today}%22&order_by=end_date%20ASC&limit=1&refine=location%3A{self.location}"
 
     def _process_data(self, data):
+        """Process API response and extract vacation data."""
         _LOGGER.debug(f"Processing data: {data}")
-        if 'results' in data and len(data['results']) > 0:
-            result = data['results'][0]
-            start_date = datetime.strptime(result['start_date'], '%Y-%m-%d').date()
-            end_date = datetime.strptime(result['end_date'], '%Y-%m-%d').date()
+
+        results = data.get('results', [])
+
+        if not results:
+            _LOGGER.warning(f"No results found for location '{self.location}'.")
+            return {"state": "Aucune donnée disponible", "attributes": {}}
+
+        result = results[0]
+        try:
+            # Conversion ISO 8601 en date sans fuseau horaire
+            start_date = datetime.fromisoformat(result['start_date']).date()
+            end_date = datetime.fromisoformat(result['end_date']).date()
             today = datetime.now().date()
 
             if start_date <= today <= end_date:
@@ -73,14 +86,18 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
             return {
                 "state": state,
                 "attributes": {
-                    "start_date": result['start_date'],
-                    "end_date": result['end_date'],
-                    "description": result['description']
+                    "start_date": start_date.strftime('%Y-%m-%d'),
+                    "end_date": end_date.strftime('%Y-%m-%d'),
+                    "description": result['description'],
+                    "location": result['location'],
+                    "zone": result['zones'],
+                    "année scolaire": result['annee_scolaire'],
                 }
             }
-        else:
-            _LOGGER.warning("No results found in API response")
-            return {"state": "Aucune donnée disponible", "attributes": {}}
+
+        except KeyError as e:
+            _LOGGER.error(f"Missing key in API response: {e}")
+            return {"state": "Données invalides", "attributes": {}}
 
 class VacancesScolairesSensor(SensorEntity):
     """Representation of a Vacances Scolaires sensor."""
