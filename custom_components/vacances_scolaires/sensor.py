@@ -78,11 +78,11 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
             end_date = datetime.fromisoformat(result['end_date']).date()
             today = datetime.now().date()
 
-            if start_date <= today <= end_date:
+            if on_vacation: 
                 state = f"{result['zones']} - Holidays"
             else:
                 state = f"{result['zones']} - Work"
-
+    
             return {
                 "state": state,
                 "attributes": {
@@ -92,6 +92,7 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
                     "location": result['location'],
                     "zone": result['zones'],
                     "année scolaire": result['annee_scolaire'],
+                    "on_vacation": on_vacation  # True si on est en vacances, sinon False
                 }
             }
 
