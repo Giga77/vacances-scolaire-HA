@@ -1,0 +1,12 @@
+{
+  "domain": "vacances_scolaires",
+  "name": "Vacances Scolaires",
+  "documentation": "https://github.com/Master13011/vacances-scolaire-HA",
+  "issue_tracker": "https://github.com/Master13011/vacances-scolaire-HA/issues",
+  "dependencies": [],
+  "codeowners": ["@Master13011"],
+  "requirements": ["requests"],
+  "iot_class": "cloud_polling",
+  "version": "1.0.1",
+  "config_flow": true
+}
