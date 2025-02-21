@@ -5,7 +5,7 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
 
 ## Fonctionnalités
 
-- **Affichage des vacances scolaires** : Montre les prochaines vacances scolaires ou les vacances en cours pour une localisation spécifique.
+- **Affichage des vacances scolaires** : Montre les vacances en cours pour une localisation spécifique.
 - **Localisation personnalisable** : Permet de choisir la localisation pour laquelle on souhaite obtenir les informations sur les vacances scolaires.
 - **Intervalle de mise à jour configurable** : Offre la possibilité de définir la fréquence de mise à jour des données.
 - **Données officielles** : Utilise l'API officielle du ministère de l'Éducation française pour des informations précises et à jour.
