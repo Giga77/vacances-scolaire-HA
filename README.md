@@ -51,7 +51,9 @@ Une fois installée et configurée, l'intégration Vacances Scolaires ajoutera u
 
 ![{9F582701-E9A6-46D8-A279-366991B42421}](https://github.com/user-attachments/assets/7ac53c4f-eb2e-4838-9b74-287c2ae64a54)
 
-PI : state; True si en vacances, False sinon
+Le "state" retournera :
+
+"Zone X - Holidays" ou "Zone X - Work"
 
 ## Contribution
 
