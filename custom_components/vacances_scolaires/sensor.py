@@ -54,11 +54,14 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
     async def _fetch_data(self):
         """Fetch data from the API."""
         url = self._get_api_url()
+        _LOGGER.debug(f"Fetching data from URL: {url}")
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 if response.status != 200:
+                    _LOGGER.error(f"API returned status code {response.status}")
                     raise Exception(f"API returned status code {response.status}")
                 data = await response.json()
+                _LOGGER.debug(f"Received data: {data}")
                 return self._process_data(data)
 
     def _get_api_url(self):
@@ -66,6 +69,7 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
         return f"https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records?where=end_date%3E%22{today}%22&order_by=end_date%20ASC&limit=1&refine=location%3A{self.location}"
 
     def _process_data(self, data):
+        _LOGGER.debug(f"Processing data: {data}")
         if 'results' in data and len(data['results']) > 0:
             result = data['results'][0]
             start_date = datetime.strptime(result['start_date'], '%Y-%m-%d').date()
@@ -86,7 +90,10 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
                 }
             }
         return {"state": "Aucune donnée disponible", "attributes": {}}
-
+            else:
+                _LOGGER.warning("No results found in API response")
+            return {"state": "Aucune donnée disponible", "attributes": {}}
+    
 class VacancesScolairesSensor(SensorEntity):
     """Representation of a Vacances Scolaires sensor."""
 
