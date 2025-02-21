@@ -37,13 +37,19 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
 2. Cliquez sur le bouton "+" pour ajouter une nouvelle intégration.
 3. Recherchez "Vacances Scolaires" et sélectionnez-la.
 4. Suivez les étapes de configuration :
-   - Choisissez la localisation (par exemple, "Nice", "Paris", "Bordeaux", etc.)
+   - Choisissez la localisation (par exemple, "Aix-Marseille", "Paris", "Bordeaux", etc.)
+        - Veuillez respecter le découpage des villes -> https://www.education.gouv.fr/calendrier-scolaire-100148
    - Définissez l'intervalle de mise à jour en heures
+
+![{258E39D5-FD11-412D-BC47-4C19B6FDA5B5}](https://github.com/user-attachments/assets/3b7d0038-141d-431a-b7c7-e056ff1b0815)
 
 
 ## Utilisation
 
 Une fois installée et configurée, l'intégration Vacances Scolaires ajoutera un capteur à votre instance Home Assistant. Ce capteur affichera les informations sur les prochaines vacances scolaires ou les vacances en cours pour la localisation spécifiée.
+
+![{A6253F51-9442-4597-BD3E-47512043409A}](https://github.com/user-attachments/assets/022cba95-6d63-421d-86c7-79fc6a0977dd)
+
 
 ## Contribution
 
