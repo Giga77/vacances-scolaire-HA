@@ -5,7 +5,7 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
 
 ## Fonctionnalités
 
-- **Affichage des vacances scolaires** : Montre les vacances en cours ou les prochaines pour une localisation spécifique.
+- **Affichage des vacances scolaires** : Montre les vacances en cours ou la prochaine pour une localisation spécifique.
 - **Indicateur booléen on_vacation** : Indique si l'on est en vacances. (True ou False)
 - **Localisation personnalisable** : Permet de choisir la localisation pour laquelle on souhaite obtenir les informations sur les vacances scolaires.
 - **Intervalle de mise à jour configurable** : Offre la possibilité de définir la fréquence de mise à jour des données.
