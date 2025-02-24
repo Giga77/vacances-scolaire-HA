@@ -44,8 +44,7 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
       - Zone : Choissisez la Zone
    - Définissez l'intervalle de mise à jour en heures
 
-![{258E39D5-FD11-412D-BC47-4C19B6FDA5B5}](https://github.com/user-attachments/assets/3b7d0038-141d-431a-b7c7-e056ff1b0815) ![{5F257346-3C09-42B7-8C2A-49B7646C1340}](https://github.com/user-attachments/assets/312eeeff-5575-424a-bc2a-c2a8c21acdb8)
-
+![{258E39D5-FD11-412D-BC47-4C19B6FDA5B5}](https://github.com/user-attachments/assets/3b7d0038-141d-431a-b7c7-e056ff1b0815) 
 
 
 ## Utilisation
@@ -54,6 +53,7 @@ Une fois installée et configurée, l'intégration Vacances Scolaires ajoutera u
 
 ![{640F061F-260B-4A7D-846C-6729C9AE6583}](https://github.com/user-attachments/assets/f5737c24-8952-46e7-88d1-79caf85c2617)
 
+![{5F257346-3C09-42B7-8C2A-49B7646C1340}](https://github.com/user-attachments/assets/204fb1d9-24c8-4fc5-9681-8d18748edba2)
 
 
 Le "state" retournera :
