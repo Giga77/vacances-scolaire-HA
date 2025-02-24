@@ -21,3 +21,19 @@ ATTR_LOCATION = "location"
 ATTR_ZONE = "zone"
 ATTR_ANNEE_SCOLAIRE = "année_scolaire"
 ATTR_EN_VACANCES = "en_vacances"
+
+ZONE_OPTIONS = [
+    "Zone A",
+    "Zone B",
+    "Zone C",
+    "Corse",
+    "Guadeloupe",
+    "Guyane",
+    "Martinique",
+    "Mayotte",
+    "Nouvelle Calédonie",
+    "Polynésie française",
+    "Réunion",
+    "Saint Pierre et Miquelon",
+    "Wallis et Futuna"
+]
