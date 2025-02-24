@@ -8,7 +8,16 @@ from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 
-from .const import DOMAIN, CONF_LOCATION, CONF_ZONE, CONF_UPDATE_INTERVAL, CONF_CONFIG_TYPE, DEFAULT_LOCATION, DEFAULT_UPDATE_INTERVAL
+from .const import (
+    DOMAIN,
+    CONF_LOCATION,
+    CONF_ZONE,
+    CONF_UPDATE_INTERVAL,
+    CONF_CONFIG_TYPE,
+    DEFAULT_LOCATION,
+    DEFAULT_UPDATE_INTERVAL,
+    ZONE_OPTIONS
+)
 
 class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Vacances Scolaires."""
@@ -36,35 +45,43 @@ class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle the location step."""
-        if user_input is None:
-            return self.async_show_form(
-                step_id="location",
-                data_schema=vol.Schema({
-                    vol.Required(CONF_LOCATION, default=DEFAULT_LOCATION): str,
-                    vol.Required(CONF_UPDATE_INTERVAL, default=DEFAULT_UPDATE_INTERVAL): int,
-                }),
+        errors = {}
+        if user_input is not None:
+            # Vous pouvez ajouter ici une validation pour la localisation si nécessaire
+            return self.async_create_entry(
+                title=f"Vacances Scolaires ({user_input[CONF_LOCATION]})",
+                data={**user_input, CONF_CONFIG_TYPE: "location"}
             )
 
-        return self.async_create_entry(
-            title="Vacances Scolaires (Location)",
-            data={**user_input, CONF_CONFIG_TYPE: "location"}
+        return self.async_show_form(
+            step_id="location",
+            data_schema=vol.Schema({
+                vol.Required(CONF_LOCATION, default=DEFAULT_LOCATION): str,
+                vol.Required(CONF_UPDATE_INTERVAL, default=DEFAULT_UPDATE_INTERVAL): int,
+            }),
+            errors=errors
         )
 
     async def async_step_zone(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle the zone step."""
-        ZONE_OPTIONS = ["Zone A", "Zone B", "Zone C"]
-        if user_input is None:
-            return self.async_show_form(
-                step_id="zone",
-                data_schema=vol.Schema({
-                    vol.Required(CONF_ZONE, default=ZONE_OPTIONS[0]): vol.In(ZONE_OPTIONS),
-                    vol.Required(CONF_UPDATE_INTERVAL, default=DEFAULT_UPDATE_INTERVAL): int,
-                }),
-            )
+        errors = {}
+        if user_input is not None:
+            zone = user_input[CONF_ZONE]
+            if zone not in ZONE_OPTIONS:
+                errors[CONF_ZONE] = "invalid_zone"
+            else:
+                return self.async_create_entry(
+                    title=f"Vacances Scolaires ({zone})",
+                    data={**user_input, CONF_CONFIG_TYPE: "zone"}
+                )
 
-        return self.async_create_entry(
-            title="Vacances Scolaires (Zone)",
-            data={**user_input, CONF_CONFIG_TYPE: "zone"}
+        return self.async_show_form(
+            step_id="zone",
+            data_schema=vol.Schema({
+                vol.Required(CONF_ZONE, default=ZONE_OPTIONS[0]): vol.In(ZONE_OPTIONS),
+                vol.Required(CONF_UPDATE_INTERVAL, default=DEFAULT_UPDATE_INTERVAL): int,
+            }),
+            errors=errors
         )
