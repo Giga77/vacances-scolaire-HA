@@ -14,6 +14,7 @@ from .const import (
     CONF_ZONE,
     CONF_UPDATE_INTERVAL,
     CONF_CONFIG_TYPE,
+    CONF_CREATE_CALENDAR,
     DEFAULT_LOCATION,
     DEFAULT_UPDATE_INTERVAL,
     ZONE_OPTIONS
@@ -58,6 +59,7 @@ class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema({
                 vol.Required(CONF_LOCATION, default=DEFAULT_LOCATION): str,
                 vol.Required(CONF_UPDATE_INTERVAL, default=DEFAULT_UPDATE_INTERVAL): int,
+                vol.Optional(CONF_CREATE_CALENDAR, default=False): bool,
             }),
             errors=errors
         )
@@ -82,6 +84,7 @@ class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema({
                 vol.Required(CONF_ZONE, default=ZONE_OPTIONS[0]): vol.In(ZONE_OPTIONS),
                 vol.Required(CONF_UPDATE_INTERVAL, default=DEFAULT_UPDATE_INTERVAL): int,
+                vol.Optional(CONF_CREATE_CALENDAR, default=False): bool,
             }),
             errors=errors
         )

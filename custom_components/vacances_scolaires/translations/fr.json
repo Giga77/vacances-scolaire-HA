@@ -13,7 +13,8 @@
                 "description": "Entrez les détails de la localisation",
                 "data": {
                     "location": "Localisation",
-                    "update_interval": "Intervalle de mise à jour (en heures)"
+                    "update_interval": "Intervalle de mise à jour (en heures)",
+                    "create_calendar": "Créer un calendrier"
                 }
             },
             "zone": {
@@ -21,7 +22,8 @@
                 "description": "Choisissez la zone scolaire",
                 "data": {
                     "zone": "Zone",
-                    "update_interval": "Intervalle de mise à jour (en heures)"
+                    "update_interval": "Intervalle de mise à jour (en heures)",
+                    "create_calendar": "Créer un calendrier"
                 }
             }
         },

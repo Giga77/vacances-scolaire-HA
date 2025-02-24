@@ -6,6 +6,7 @@ CONF_LOCATION = "location"
 CONF_ZONE = "zone"
 CONF_UPDATE_INTERVAL = "update_interval"
 CONF_CONFIG_TYPE = "config_type"
+CONF_CREATE_CALENDAR = "create_calendar"
 
 DEFAULT_LOCATION = ""
 DEFAULT_UPDATE_INTERVAL = 12
