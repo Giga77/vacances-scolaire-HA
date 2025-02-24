@@ -13,6 +13,7 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
 - **Intervalle de mise à jour configurable** : Offre la possibilité de définir la fréquence de mise à jour des données.
 - **Données officielles** : Utilise l'API officielle du ministère de l'Éducation française pour des informations précises et à jour.
 - **Attributs détaillés** : Fournit des informations supplémentaires telles que les dates de début et de fin des vacances.
+- **Ajout calendrier** : Vous avez la possibilité d'ajouter un calendrier
 
 ## Installation
 
