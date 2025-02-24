@@ -1,22 +1,66 @@
 {
-  "config": {
-    "step": {
-      "user": {
-        "title": "Configuration des Vacances Scolaires",
-        "description": "Configurez les paramètres pour les vacances scolaires",
-        "data": {
-          "location": "Localisation",
-          "update_interval": "Intervalle de mise à jour (en heures)"
+    "config": {
+        "step": {
+            "user": {
+                "title": "Configuration des Vacances Scolaires",
+                "description": "Choisissez le type de configuration",
+                "data": {
+                    "config_type": "Type de configuration"
+                }
+            },
+            "location": {
+                "title": "Configuration par localisation",
+                "description": "Entrez les détails de la localisation",
+                "data": {
+                    "location": "Localisation",
+                    "update_interval": "Intervalle de mise à jour (en heures)"
+                }
+            },
+            "zone": {
+                "title": "Configuration par zone",
+                "description": "Choisissez la zone scolaire",
+                "data": {
+                    "zone": "Zone",
+                    "update_interval": "Intervalle de mise à jour (en heures)"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Échec de connexion",
+            "invalid_auth": "Authentification invalide",
+            "unknown": "Erreur inattendue"
+        },
+        "abort": {
+            "already_configured": "Cette configuration existe déjà"
         }
-      }
     },
-    "error": {
-      "cannot_connect": "Échec de connexion",
-      "invalid_auth": "Authentification invalide",
-      "unknown": "Erreur inattendue"
+    "options": {
+        "step": {
+            "init": {
+                "title": "Options des Vacances Scolaires",
+                "data": {
+                    "update_interval": "Intervalle de mise à jour (en heures)"
+                }
+            }
+        }
     },
-    "abort": {
-      "already_configured": "L'appareil est déjà configuré"
+    "entity": {
+        "sensor": {
+            "vacances_scolaires": {
+                "state": {
+                    "holidays": "Vacances",
+                    "work": "École"
+                },
+                "state_attributes": {
+                    "start_date": "Date de début",
+                    "end_date": "Date de fin",
+                    "description": "Description",
+                    "location": "Localisation",
+                    "zone": "Zone",
+                    "année_scolaire": "Année scolaire",
+                    "en_vacances": "En vacances"
+                }
+            }
+        }
     }
-  }
 }

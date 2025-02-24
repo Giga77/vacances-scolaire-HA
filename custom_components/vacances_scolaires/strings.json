@@ -5,18 +5,22 @@
         "title": "School Holidays Configuration",
         "description": "Set up the parameters for school holidays",
         "data": {
-          "location": "Location",
+          "type": "Type",
+          "location": "Ville",
+          "zone": "Zone",
           "update_interval": "Update interval (in hours)"
+        },
+        "error": {
+          "cannot_connect": "Failed to connect",
+          "invalid_auth": "Invalid authentication",
+          "unknown": "Unexpected error",
+          "location_required": "Location is required when type is Location",
+          "zone_required": "Zone is required when type is Zone"
+        },
+        "abort": {
+          "already_configured": "Device is already configured"
         }
       }
-    },
-    "error": {
-      "cannot_connect": "Failed to connect",
-      "invalid_auth": "Invalid authentication",
-      "unknown": "Unexpected error"
-    },
-    "abort": {
-      "already_configured": "Device is already configured"
     }
   }
 }
