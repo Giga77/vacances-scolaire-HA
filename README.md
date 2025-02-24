@@ -18,23 +18,21 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
 
 2. Ouvrez HACS.
 
-3. Sélectionnez "Intégrations".
+3. Cliquez sur les trois points en haut à droite et choisissez "Dépôts personnalisés".
 
-4. Cliquez sur les trois points en haut à droite et choisissez "Dépôts personnalisés".
-
-5. Ajoutez le dépôt :
+4. Ajoutez le dépôt :
    - URL : 'https://github.com/Master13011/vacances-scolaire-HA'
-   - Catégorie : Intégration
+   - Type : Intégration
 
-6. Cliquez sur "Ajouter".
+5. Cliquez sur "Ajouter".
 
-7. Recherchez "Vacances Scolaires" dans les intégrations HACS et installez-la.
+6. Recherchez "Vacances Scolaires" dans les intégrations HACS et installez-la.
 
-8. Redémarrez Home Assistant.
+7. Redémarrez Home Assistant.
 
 ## Configuration
 
-1. Allez dans Configuration > Intégrations dans Home Assistant.
+1. Allez dans Paramètres > Appareils et services dans Home Assistant.
 2. Cliquez sur le bouton "+" pour ajouter une nouvelle intégration.
 3. Recherchez "Vacances Scolaires" et sélectionnez-la.
 4. Suivez les étapes de configuration :
