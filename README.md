@@ -44,7 +44,8 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
       - Zone : Choissisez la Zone
    - Définissez l'intervalle de mise à jour en heures
 
-![{258E39D5-FD11-412D-BC47-4C19B6FDA5B5}](https://github.com/user-attachments/assets/3b7d0038-141d-431a-b7c7-e056ff1b0815)
+![{258E39D5-FD11-412D-BC47-4C19B6FDA5B5}](https://github.com/user-attachments/assets/3b7d0038-141d-431a-b7c7-e056ff1b0815) ![{5F257346-3C09-42B7-8C2A-49B7646C1340}](https://github.com/user-attachments/assets/312eeeff-5575-424a-bc2a-c2a8c21acdb8)
+
 
 
 ## Utilisation
