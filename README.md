@@ -5,8 +5,8 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
 
 ## Fonctionnalités
 
-- **Affichage des vacances scolaires** : Montre les vacances en cours ou la prochaine pour une localisation spécifique.
-- **Indicateur booléen on_vacation** : Indique si l'on est en vacances. (True ou False)
+- **Affichage des vacances scolaires** : Montre les vacances en cours ou la prochaine pour une localisation spécifique par zone et/ou ville.
+- **Indicateur booléen en_vacances** : Indique si l'on est en vacances. (true ou false)
 - **Localisation personnalisable** : Permet de choisir la localisation pour laquelle on souhaite obtenir les informations sur les vacances scolaires.
 - **Intervalle de mise à jour configurable** : Offre la possibilité de définir la fréquence de mise à jour des données.
 - **Données officielles** : Utilise l'API officielle du ministère de l'Éducation française pour des informations précises et à jour.
@@ -38,8 +38,10 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
 2. Cliquez sur le bouton "+" pour ajouter une nouvelle intégration.
 3. Recherchez "Vacances Scolaires" et sélectionnez-la.
 4. Suivez les étapes de configuration :
-   - Choisissez la localisation (par exemple, "Aix-Marseille", "Paris", "Bordeaux", etc.)
-        - Veuillez respecter le découpage des villes -> https://www.education.gouv.fr/calendrier-scolaire-100148
+   - Choisissez soit par la Ville, soit par la Zone
+      - Ville : Choisissez la localisation (par exemple, "Aix-Marseille", "Paris", "Bordeaux", etc.)
+           - Veuillez respecter le découpage des villes -> https://www.education.gouv.fr/calendrier-scolaire-100148
+      - Zone : Choissisez la Zone
    - Définissez l'intervalle de mise à jour en heures
 
 ![{258E39D5-FD11-412D-BC47-4C19B6FDA5B5}](https://github.com/user-attachments/assets/3b7d0038-141d-431a-b7c7-e056ff1b0815)
