@@ -22,7 +22,6 @@ class VacancesScolairesCalendar(CoordinatorEntity, CalendarEntity):
                 start=start_date,
                 end=end_date,
                 summary=self.coordinator.data["description"],
-                description=f"Du {start_date.strftime('%d/%m/%Y à %H:%M')} au {end_date.strftime('%d/%m/%Y à %H:%M')} (UTC)"
             )
         return None
 
@@ -37,7 +36,6 @@ class VacancesScolairesCalendar(CoordinatorEntity, CalendarEntity):
                     start=event_start,
                     end=event_end,
                     summary=self.coordinator.data["description"],
-                    description=f"Du {event_start.strftime('%d/%m/%Y à %H:%M')} au {event_end.strftime('%d/%m/%Y à %H:%M')} (UTC)"
                 )
                 events.append(event)
         return events
