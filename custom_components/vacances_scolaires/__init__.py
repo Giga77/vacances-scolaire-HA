@@ -21,7 +21,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     if entry.data.get(CONF_CREATE_CALENDAR):
-        await hass.config_entries.async_forward_entry_setup(entry, "calendar")
+        await hass.config_entries.async_forward_entry_setups(entry, ["calendar"])
 
     return True
 
