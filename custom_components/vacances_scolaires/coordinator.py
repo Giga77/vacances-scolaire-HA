@@ -51,9 +51,9 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
                             raise UpdateFailed("No data received from API")
                         
                         result = data["results"][0]
-                        start_date = datetime.strptime(result['start_date'].split('T')[0], '%Y-%m-%d').date()
-                        end_date = datetime.strptime(result['end_date'].split('T')[0], '%Y-%m-%d').date()
-                        today = date.today()
+                        start_date = datetime.strptime(result['start_date'].split('T')[0], '%Y-%m-%d').replace(hour=22, minute=0, tzinfo=ZoneInfo("UTC"))
+                        end_date = datetime.strptime(result['end_date'].split('T')[0], '%Y-%m-%d').replace(hour=22, minute=0, tzinfo=ZoneInfo("UTC"))
+                        today = datetime.now(ZoneInfo("UTC")).replace(hour=0, minute=0, second=0, microsecond=0)
                         on_vacation = start_date <= today <= end_date
 
                         if on_vacation:
