@@ -3,7 +3,7 @@ from datetime import timedelta, date, datetime
 import logging
 from typing import Any
 import asyncio
-
+from zoneinfo import ZoneInfo
 import aiohttp
 import async_timeout
 
