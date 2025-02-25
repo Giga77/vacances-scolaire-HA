@@ -1,5 +1,6 @@
 # vacances-scolaire-HA
 Intégration Vacances Scolaire FR pour Home Assistant
+
 Forum App : https://forum.hacf.fr/t/integration-vacances-scolaires/58499
 
 Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de récupérer et d'afficher les périodes de vacances scolaires en fonction de leur localisation. Les utilisateurs peuvent configurer la localisation et l'intervalle de mise à jour directement via l'interface de Home Assistant, offrant ainsi une flexibilité maximale. L'intégration utilise des données ouvertes du ministère de l'Éducation français pour fournir des informations précises sur les vacances scolaires. Compatible avec HACS, elle facilite l'installation et la mise à jour.
