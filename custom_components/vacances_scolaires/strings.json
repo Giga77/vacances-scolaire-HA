@@ -16,11 +16,11 @@
           "unknown": "Unexpected error",
           "location_required": "Location is required when type is Location",
           "zone_required": "Zone is required when type is Zone"
-        },
-        "abort": {
-          "already_configured": "Device is already configured"
         }
       }
+    },
+    "abort": {
+      "already_configured": "Device is already configured"
     }
   }
 }
