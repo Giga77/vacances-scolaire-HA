@@ -1,15 +1,15 @@
 {
-    "domain": "vacances_scolaires",
-    "name": "Vacances Scolaires",
-    "config_flow": true,
-    "documentation": "https://github.com/Master13011/vacances-scolaire-HA",
-    "requirements": [],
-    "ssdp": [],
-    "zeroconf": [],
-    "homekit": {},
-    "dependencies": [],
-    "version": "1.0.0",
-    "codeowners": ["@Master13011"],
-    "iot_class": "cloud_polling",
-    "issue_tracker": "https://github.com/Master13011/vacances-scolaire-HA/issues"
+  "domain": "vacances_scolaires",
+  "name": "Vacances Scolaires Integration",
+  "codeowners": [
+    "@Master13011"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/Master13011/vacances-scolaire-HA",
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "hhttps://github.com/Master13011/vacances-scolaire-HA/issues",
+  "requirements": [],
+  "version": "1.0.1"
 }
