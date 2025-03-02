@@ -2,7 +2,7 @@
     "domain": "vacances_scolaires",
     "name": "Vacances Scolaires",
     "config_flow": true,
-    "documentation": "https://github.com/Master13011/vacances-scolaire-HAl",
+    "documentation": "https://github.com/Master13011/vacances-scolaire-HA",
     "requirements": [],
     "ssdp": [],
     "zeroconf": [],
