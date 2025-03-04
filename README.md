@@ -19,6 +19,7 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
   
 ## BUG
 - La configuration par location affiche le calendrier à 00:00
+  
 ![image](https://github.com/user-attachments/assets/bd39f18c-aab0-4f9c-a5fe-2c6e22b4080b)
 
 
