@@ -56,8 +56,7 @@ Une fois installée et configurée, l'intégration Vacances Scolaires ajoutera u
 
 ![{640F061F-260B-4A7D-846C-6729C9AE6583}](https://github.com/user-attachments/assets/f5737c24-8952-46e7-88d1-79caf85c2617)
 
-![{5F257346-3C09-42B7-8C2A-49B7646C1340}](https://github.com/user-attachments/assets/204fb1d9-24c8-4fc5-9681-8d18748edba2)
-
+![{2C967C88-7E4D-4A34-9704-10A08D9E3E14}](https://github.com/user-attachments/assets/83ed1c94-5efc-431e-8c35-289a8c8b10dd)
 
 Le "state" retournera :
 
