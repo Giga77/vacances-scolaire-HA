@@ -17,12 +17,6 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
 - **Attributs détaillés** : Fournit des informations supplémentaires telles que les dates de début et de fin des vacances.
 - **Ajout calendrier** : Vous avez la possibilité d'ajouter un calendrier
   
-## BUG
-- La configuration par location affiche le calendrier à 00:00
-  
-![image](https://github.com/user-attachments/assets/bd39f18c-aab0-4f9c-a5fe-2c6e22b4080b)
-
-
 ## Installation
 
 1. Assurez-vous que [HACS](https://hacs.xyz) est installé.
