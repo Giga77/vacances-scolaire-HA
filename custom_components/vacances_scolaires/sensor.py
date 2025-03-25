@@ -1,10 +1,6 @@
 """Sensor platform for Vacances Scolaires."""
 from __future__ import annotations
 
-import locale
-import logging
-from typing import Any
-
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -12,15 +8,8 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from datetime import datetime
 from zoneinfo import ZoneInfo
-
-from .const import (
-    DOMAIN, CONF_LOCATION, CONF_ZONE, CONF_CONFIG_TYPE, ATTRIBUTION,
-    ATTR_START_DATE, ATTR_END_DATE, ATTR_DESCRIPTION, ATTR_LOCATION,
-    ATTR_ZONE, ATTR_ANNEE_SCOLAIRE, ATTR_EN_VACANCES
-)
+from .const import DOMAIN, CONF_LOCATION, CONF_ZONE, CONF_CONFIG_TYPE, ATTRIBUTION, ATTR_START_DATE, ATTR_END_DATE, ATTR_DESCRIPTION, ATTR_LOCATION, ATTR_ZONE, ATTR_ANNEE_SCOLAIRE, ATTR_EN_VACANCES
 from .coordinator import VacancesScolairesDataUpdateCoordinator
-
-_LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(
     hass: HomeAssistant, 
@@ -58,18 +47,9 @@ class VacancesScolairesSensor(CoordinatorEntity, SensorEntity):
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return the state attributes."""
         if self.coordinator.data:
-            try:
-                locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
-            except locale.Error:
-                _LOGGER.warning(
-                    "Impossible de définir la locale française. "
-                    "Assurez-vous que la locale est installée sur votre système."
-                )
-            start_date = datetime.fromisoformat(self.coordinator.data.get("start_date"))
-            end_date = datetime.fromisoformat(self.coordinator.data.get("end_date"))
             return {
-                ATTR_START_DATE: start_date.strftime("%d %B %Y à %H:%M:%S %Z"),
-                ATTR_END_DATE: end_date.strftime("%d %B %Y à %H:%M:%S %Z"),
+                ATTR_START_DATE: self.coordinator.data.get("start_date"),
+                ATTR_END_DATE: self.coordinator.data.get("end_date"),
                 ATTR_DESCRIPTION: self.coordinator.data.get("description"),
                 ATTR_LOCATION: self.coordinator.data.get("location"),
                 ATTR_ZONE: self.coordinator.data.get("zone"),
