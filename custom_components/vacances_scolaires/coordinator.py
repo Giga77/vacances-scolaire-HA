@@ -16,6 +16,20 @@ from .const import DOMAIN, CONF_LOCATION, CONF_ZONE, CONF_CONFIG_TYPE
 
 _LOGGER = logging.getLogger(__name__)
 
+def get_timezone(location):
+    timezone_mapping = {
+        "Guadeloupe": "America/Guadeloupe",
+        "Guyane": "America/Cayenne",
+        "Martinique": "America/Martinique",
+        "Mayotte": "Indian/Mayotte",
+        "Nouvelle Calédonie": "Pacific/Noumea",
+        "Polynésie française": "Pacific/Tahiti",
+        "Réunion": "Indian/Reunion",
+        "Saint Pierre et Miquelon": "America/Miquelon",
+        "Wallis et Futuna": "Pacific/Wallis"
+    }
+    return timezone_mapping.get(location, "Europe/Paris")
+
 class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching Vacances Scolaires data."""
 
@@ -51,9 +65,12 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
                             raise UpdateFailed("No data received from API")
                         
                         result = data["results"][0]
-                        start_date = datetime.strptime(result['start_date'].split('T')[0], '%Y-%m-%d').replace(hour=22, minute=0, tzinfo=ZoneInfo("UTC"))
-                        end_date = datetime.strptime(result['end_date'].split('T')[0], '%Y-%m-%d').replace(hour=22, minute=0, tzinfo=ZoneInfo("UTC"))
-                        today = datetime.now(ZoneInfo("UTC")).replace(hour=0, minute=0, second=0, microsecond=0)
+                        location = result['location']
+                        timezone = ZoneInfo(get_timezone(location))
+                        
+                        start_date = datetime.fromisoformat(result['start_date']).replace(tzinfo=timezone)
+                        end_date = datetime.fromisoformat(result['end_date']).replace(tzinfo=timezone)
+                        today = datetime.now(timezone).replace(hour=0, minute=0, second=0, microsecond=0)
                         on_vacation = start_date <= today <= end_date
 
                         if on_vacation:
@@ -66,7 +83,7 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
                             "start_date": start_date.isoformat(),
                             "end_date": end_date.isoformat(),
                             "description": result['description'],
-                            "location": result['location'],
+                            "location": location,
                             "zone": result['zones'],
                             "année_scolaire": result['annee_scolaire'],
                             "on_vacation": on_vacation
