@@ -1,4 +1,3 @@
-"""DataUpdateCoordinator for Vacances Scolaires."""
 from datetime import timedelta, date, datetime
 import logging
 from typing import Any
@@ -6,6 +5,7 @@ import asyncio
 from zoneinfo import ZoneInfo
 import aiohttp
 import async_timeout
+import os
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -30,6 +30,18 @@ def get_timezone(location):
     }
     return timezone_mapping.get(location, "Europe/Paris")
 
+def traduire_mois(date_str: str) -> str:
+    """Remplace les noms de mois en anglais par leur équivalent français."""
+    mois_en = ["January", "February", "March", "April", "May", "June", 
+               "July", "August", "September", "October", "November", "December"]
+    mois_fr = ["janvier", "février", "mars", "avril", "mai", "juin",
+               "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+
+    for en, fr in zip(mois_en, mois_fr):
+        date_str = date_str.replace(en, fr)
+
+    return date_str
+
 class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching Vacances Scolaires data."""
 
@@ -42,6 +54,7 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self) -> dict[str, Any]:
         """Fetch data from API endpoint."""
+
         today = date.today().isoformat()
         config_type = self.config.get(CONF_CONFIG_TYPE, "location")
         if config_type == "location":
@@ -65,12 +78,9 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
                             raise UpdateFailed("No data received from API")
                         
                         result = data["results"][0]
-                        location = result['location']
-                        timezone = ZoneInfo(get_timezone(location))
-                        
-                        start_date = datetime.fromisoformat(result['start_date']).replace(tzinfo=timezone)
-                        end_date = datetime.fromisoformat(result['end_date']).replace(tzinfo=timezone)
-                        today = datetime.now(timezone).replace(hour=0, minute=0, second=0, microsecond=0)
+                        start_date = datetime.fromisoformat(result['start_date']).replace(tzinfo=ZoneInfo("UTC"))
+                        end_date = datetime.fromisoformat(result['end_date']).replace(tzinfo=ZoneInfo("UTC"))
+                        today = datetime.now(ZoneInfo("UTC")).replace(hour=0, minute=0, second=0, microsecond=0)
                         on_vacation = start_date <= today <= end_date
 
                         if on_vacation:
@@ -78,12 +88,16 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
                         else:
                             state = f"{result['zones']} - Work"
 
+                        # Formatage des dates avec traduction des mois en français
+                        start_date_formatted = traduire_mois(start_date.strftime("%d %B %Y à %H:%M:%S %Z"))
+                        end_date_formatted = traduire_mois(end_date.strftime("%d %B %Y à %H:%M:%S %Z"))
+
                         return {
                             "state": state,
-                            "start_date": start_date.isoformat(),
-                            "end_date": end_date.isoformat(),
+                            "start_date": start_date_formatted,  # Version traduite
+                            "end_date": end_date_formatted,  # Version traduite
                             "description": result['description'],
-                            "location": location,
+                            "location": result['location'],
                             "zone": result['zones'],
                             "année_scolaire": result['annee_scolaire'],
                             "on_vacation": on_vacation
