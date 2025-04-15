@@ -8,7 +8,6 @@ import async_timeout
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.config_entries import ConfigEntry
 
 from .const import DOMAIN, CONF_LOCATION, CONF_ZONE, CONF_CONFIG_TYPE
