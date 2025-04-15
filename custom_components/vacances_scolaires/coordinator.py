@@ -5,7 +5,6 @@ import asyncio
 from zoneinfo import ZoneInfo
 import aiohttp
 import async_timeout
-import os
 
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
