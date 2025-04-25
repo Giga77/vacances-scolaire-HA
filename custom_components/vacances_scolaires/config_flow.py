@@ -85,11 +85,18 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlow):
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle the options flow."""
         if user_input is not None:
+            # Mettre à jour les options
+            self.hass.config_entries.async_update_entry(
+                self.config_entry, options=user_input
+            )
+            # Relancer la configuration pour appliquer les nouvelles options
+            await self.hass.config_entries.async_reload(self.config_entry.entry_id)
             return self.async_create_entry(
                 title="",
                 data=user_input,
             )
 
+        # Afficher le formulaire avec les options actuelles
         return self.async_show_form(
             step_id="init",
             data_schema=_build_schema(self.config_entry.data, self.config_entry.options),
