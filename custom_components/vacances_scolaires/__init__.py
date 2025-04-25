@@ -36,5 +36,4 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 # Correct setup without manual async_register
 async def async_setup(hass: HomeAssistant, config: dict):
     """Set up the Vacances Scolaires integration."""
-    # Nothing needs to be manually registered here, Home Assistant handles the flow registration
     return True
