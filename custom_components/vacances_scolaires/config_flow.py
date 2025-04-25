@@ -6,6 +6,7 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.core import HomeAssistant
 import logging
 
 from .const import (
@@ -103,9 +104,6 @@ class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 class VacancesScolairesOptionsFlowHandler(config_entries.OptionsFlow):
     """Handle options flow for Vacances Scolaires."""
 
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Initialize options flow."""
-
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Manage the options."""
         if user_input is not None:
@@ -122,7 +120,19 @@ class VacancesScolairesOptionsFlowHandler(config_entries.OptionsFlow):
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema({
-                vol.Required(CONF_UPDATE_INTERVAL, default=self.config_entry.options.get(CONF_UPDATE_INTERVAL, self.config_entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL))): int,
-                vol.Optional(CONF_VERIFY_SSL, default=self.config_entry.options.get(CONF_VERIFY_SSL, True)): bool,
+                vol.Required(
+                    CONF_UPDATE_INTERVAL,
+                    default=self.config_entry.options.get(
+                        CONF_UPDATE_INTERVAL,
+                        self.config_entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
+                    )
+                ): int,
+                vol.Optional(
+                    CONF_VERIFY_SSL,
+                    default=self.config_entry.options.get(
+                        CONF_VERIFY_SSL,
+                        self.config_entry.data.get(CONF_VERIFY_SSL, True)  # <-- c'est ici que tu choisis le défaut
+                    )
+                ): bool,
             })
         )
