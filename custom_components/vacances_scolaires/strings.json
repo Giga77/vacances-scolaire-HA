@@ -20,7 +20,7 @@
     "step": {
       "init": {
         "data": {
-          "api_ssl_check": "Check SSL certificate of API server"
+          "verify_ssl": "Check SSL certificate of API server"
         }
       }
     },
