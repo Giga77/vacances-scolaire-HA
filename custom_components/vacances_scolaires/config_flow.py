@@ -90,3 +90,30 @@ class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             }),
             errors=errors
         )
+class VacancesScolairesOptionsFlowHandler(config_entries.OptionsFlow):
+    """Handle the options flow for Vacances Scolaires."""
+
+    def __init__(self, config_entry):
+        self.config_entry = config_entry
+
+    async def async_step_init(self, user_input=None):
+        """Handle the options configuration step."""
+        if user_input is not None:
+            # Si des données ont été fournies, on met à jour les options
+            return self.async_create_entry(title="", data=user_input)
+
+        # On récupère les options actuelles de la configuration
+        current = self.config_entry.options
+
+        # Affichage du formulaire pour modifier les options
+        return self.async_show_form(
+            step_id="init",
+            data_schema=vol.Schema({
+                vol.Required(CONF_API_SSL_CHECK, default=current.get(CONF_API_SSL_CHECK, True)): bool,
+                vol.Required(CONF_UPDATE_INTERVAL, default=current.get(CONF_UPDATE_INTERVAL, 12)): int,
+            })
+        )
+
+async def async_get_options_flow(config_entry):
+    """Retourne le gestionnaire d'options pour cette configuration."""
+    return VacancesScolairesOptionsFlowHandler(config_entry)
