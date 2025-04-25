@@ -17,6 +17,8 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
 - **Attributs détaillés** : Fournit des informations supplémentaires telles que les dates de début et de fin des vacances.
 - **Ajout calendrier** : Vous avez la possibilité d'ajouter un calendrier
 - **Ajout capteur** : Vacances Scolaires Aujourd’Hui et Demain
+- **Ajout SSL_Verify** : Permet de désactiver la vérification du certificat
+- **Modification après config** : Permet de modifier la valeur de l'intervalle de MAJ et la vérification du certificat
   
 ## Installation
 
