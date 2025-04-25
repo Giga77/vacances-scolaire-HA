@@ -128,24 +128,33 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlow):
     """Handle Vacances Scolaires options."""
 
     def __init__(self, config_entry: ConfigEntry):
+        """Initialisation de l'option de flux avec l'entrée de configuration"""
         self.config_entry = config_entry
-        self.entity_registry = None  # Initialisé après hass est prêt
+        self.entity_registry = None
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
-        """Show options form with only editable options."""
+        """Affiche le formulaire des options avec les options modifiables"""
         if user_input is not None:
-            # Accéder à self.hass ici lorsque l'instance est prête
+            # Initialisation du registre d'entités lorsque l'instance est prête
             self.entity_registry = async_get(self.hass)
+
+            # Vérification si le calendrier doit être supprimé
+            create_calendar = user_input.get(CONF_CREATE_CALENDAR, False)
+
+            calendar_entity_id = f"calendar.{self.config_entry.entry_id}_vacances_scolaires"
             
-            # Si le calendrier est désactivé, supprimer le calendrier
-            if not user_input.get(CONF_CREATE_CALENDAR, False):
-                calendar_entity_id = f"calendar.{self.config_entry.entry_id}_vacances_scolaires"
-                
-                # Vérification si l'entité calendrier existe
+            if not create_calendar:
+                # Si l'utilisateur désactive le calendrier, supprimer l'entité calendrier si elle existe
                 if self.entity_registry.async_is_registered(calendar_entity_id):
                     _LOGGER.info(f"Suppression de l'entité calendrier: {calendar_entity_id}")
                     self.entity_registry.async_remove(calendar_entity_id)
+            elif create_calendar:
+                # Si l'utilisateur veut créer le calendrier, mais que l'entité calendrier existe déjà, ne rien faire
+                if not self.entity_registry.async_is_registered(calendar_entity_id):
+                    _LOGGER.info(f"Création de l'entité calendrier: {calendar_entity_id}")
+                    # Code pour recréer l'entité calendrier ici (si nécessaire)
 
+            # Créer ou mettre à jour l'entrée dans la configuration
             return self.async_create_entry(
                 title="",
                 data=user_input,
