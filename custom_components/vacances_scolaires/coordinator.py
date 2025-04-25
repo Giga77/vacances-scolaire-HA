@@ -5,7 +5,7 @@ import asyncio
 from zoneinfo import ZoneInfo
 import aiohttp
 import async_timeout
-
+from aiohttp import ClientSession, TCPConnector
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.config_entries import ConfigEntry
@@ -47,10 +47,15 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
         """Initialize the data updater."""
         self.config = entry.data
         update_interval = timedelta(hours=self.config.get("update_interval", 12))
-        api_ssl_check: bool = True,
+        self.api_ssl_check: bool = self.config.get(CONF_API_SSL_CHECK, True)
 
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
-
+        
+    async def _create_session(self) -> ClientSession:
+        """Create aiohttp session with optional SSL verification."""
+        connector = TCPConnector(ssl=self.api_ssl_check)
+        return ClientSession(connector=connector)
+        
     async def _async_update_data(self) -> dict[str, Any]:
         """Fetch data from API endpoint."""
 
