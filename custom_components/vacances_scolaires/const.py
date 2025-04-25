@@ -1,7 +1,7 @@
 """Constants for the Vacances Scolaires integration."""
 
 DOMAIN = "vacances_scolaires"
-
+CONF_API_SSL_CHECK: Final = "api_ssl_check"
 CONF_LOCATION = "location"
 CONF_ZONE = "zone"
 CONF_UPDATE_INTERVAL = "update_interval"
