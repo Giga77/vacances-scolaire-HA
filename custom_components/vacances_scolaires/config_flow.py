@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Any
 import voluptuous as vol
 
-from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.config_entries import ConfigFlow, OptionsFlow, ConfigEntry, FlowResult
 from homeassistant.helpers.entity_registry import async_get
