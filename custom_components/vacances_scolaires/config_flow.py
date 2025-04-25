@@ -110,5 +110,7 @@ class VacancesScolairesOptionsFlowHandler(config_entries.OptionsFlow):
             }),
         )
 
-async def async_get_options_flow(config_entry: config_entries.ConfigEntry):
+@staticmethod
+@callback
+def async_get_options_flow(config_entry: config_entries.ConfigEntry):
     return VacancesScolairesOptionsFlowHandler(config_entry)
