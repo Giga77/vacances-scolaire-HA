@@ -46,17 +46,19 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize the data updater."""
         self.entry = entry
-        self.config = {**entry.data, **entry.options}  # fusion data + options
+        self.hass = hass
+        self.api_ssl_check: bool = entry.options.get(CONF_API_SSL_CHECK, True)
         
-        self.api_ssl_check: bool = self.config.get(CONF_API_SSL_CHECK, True)
+        # L'intervalle de mise à jour doit être mis à jour pour refléter les changements des options
+        update_interval = entry.options.get(CONF_UPDATE_INTERVAL, entry.data.get(CONF_UPDATE_INTERVAL, 12))
+
         super().__init__(
-        hass,
-        _LOGGER,
-        name=DOMAIN,
-        update_interval=timedelta(hours=self.config.get("update_interval", 12)),
+            hass,
+            _LOGGER,
+            name=DOMAIN,
+            update_interval=timedelta(hours=update_interval),
         )
-        
-    
+
     async def _create_session(self) -> ClientSession:
         """Create aiohttp session with optional SSL verification."""
         connector = TCPConnector(ssl=self.api_ssl_check)
@@ -66,12 +68,12 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
         """Fetch data from API endpoint."""
 
         today = date.today().isoformat()
-        config_type = self.config.get(CONF_CONFIG_TYPE, "location")
+        config_type = self.entry.options.get(CONF_CONFIG_TYPE, "location")  # Récupérer les options mises à jour
         if config_type == "location":
-            location = self.config[CONF_LOCATION]
+            location = self.entry.options[CONF_LOCATION]
             api_url = f"https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records?where=end_date%3E%22{today}%22&order_by=start_date%20ASC&limit=1&refine=location%3A{location}"
         elif config_type == "zone":
-            zone = self.config[CONF_ZONE]
+            zone = self.entry.options[CONF_ZONE]
             api_url = f"https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records?where=end_date%3E%22{today}%22&order_by=start_date%20ASC&limit=1&refine=zones%3A{zone}"
         else:
             raise UpdateFailed("Invalid configuration type")
@@ -84,24 +86,24 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
                         if response.status != 200:
                             raise UpdateFailed(f"Error communicating with API: {response.status}")
                         data = await response.json()
-        
+
                         if not data.get("results"):
                             raise UpdateFailed("No data received from API")
-        
+
                         result = data["results"][0]
                         start_date = datetime.fromisoformat(result['start_date']).replace(tzinfo=ZoneInfo("UTC"))
                         end_date = datetime.fromisoformat(result['end_date']).replace(tzinfo=ZoneInfo("UTC"))
                         today = datetime.now(ZoneInfo("UTC")).replace(hour=0, minute=0, second=0, microsecond=0)
                         on_vacation = start_date <= today <= end_date
-        
+
                         if on_vacation:
                             state = f"{result['zones']} - Holidays"
                         else:
                             state = f"{result['zones']} - Work"
-        
+
                         start_date_formatted = traduire_mois(start_date.strftime("%d %B %Y à %H:%M:%S %Z"))
                         end_date_formatted = traduire_mois(end_date.strftime("%d %B %Y à %H:%M:%S %Z"))
-        
+
                         return {
                             "state": state,
                             "start_date": start_date_formatted,
