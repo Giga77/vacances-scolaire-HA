@@ -3,6 +3,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from .const import DOMAIN, PLATFORMS, CONF_CREATE_CALENDAR
 from .coordinator import VacancesScolairesDataUpdateCoordinator
+from .config_flow import VacancesScolairesConfigFlow, VacancesScolairesOptionsFlowHandler
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Vacances Scolaires from a config entry."""
@@ -32,3 +33,12 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
+
+# Enregistrement de la fonction de configuration et des options dans async_setup
+async def async_setup(hass: HomeAssistant, config: dict):
+    """Set up the Vacances Scolaires integration."""
+    # Enregistrer les flux de configuration pour l'intégration
+    hass.config_entries.flow.async_register(DOMAIN, VacancesScolairesConfigFlow)
+
+    # Enregistrer le flow des options pour l'intégration
+    hass.config_entries.options.async_register(DOMAIN, VacancesScolairesOptionsFlowHandler)
