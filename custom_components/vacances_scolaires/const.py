@@ -1,12 +1,13 @@
 """Constants for the Vacances Scolaires integration."""
 
 DOMAIN = "vacances_scolaires"
-CONF_API_SSL_CHECK = "api_ssl_check"
+
 CONF_LOCATION = "location"
 CONF_ZONE = "zone"
 CONF_UPDATE_INTERVAL = "update_interval"
 CONF_CONFIG_TYPE = "config_type"
 CONF_CREATE_CALENDAR = "create_calendar"
+CONF_VERIFY_SSL = "verify_ssl"
 
 DEFAULT_LOCATION = ""
 DEFAULT_UPDATE_INTERVAL = 12
