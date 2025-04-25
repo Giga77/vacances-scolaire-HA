@@ -8,6 +8,7 @@ from homeassistant.core import callback
 from homeassistant.config_entries import ConfigFlow, OptionsFlow, ConfigEntry, FlowResult
 from homeassistant.helpers.entity_registry import async_get
 from homeassistant.core import HomeAssistant
+from homeassistant.components.calendar import DOMAIN as CALENDAR_DOMAIN
 
 from .const import (
     DOMAIN,
@@ -138,9 +139,11 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlow):
             
             # Si le calendrier est désactivé, supprimer le calendrier
             if not user_input.get(CONF_CREATE_CALENDAR, False):
-                # Suppression du calendrier si existant
                 calendar_entity_id = f"calendar.{self.config_entry.entry_id}_vacances_scolaires"
+                
+                # Vérification si l'entité calendrier existe
                 if self.entity_registry.async_is_registered(calendar_entity_id):
+                    _LOGGER.info(f"Suppression de l'entité calendrier: {calendar_entity_id}")
                     self.entity_registry.async_remove(calendar_entity_id)
 
             return self.async_create_entry(
