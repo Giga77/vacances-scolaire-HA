@@ -6,7 +6,7 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
-from homeassistant.core import HomeAssistant
+
 import logging
 
 from .const import (
@@ -99,7 +99,7 @@ class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     def async_get_options_flow(config_entry: config_entries.ConfigEntry) -> config_entries.OptionsFlow:
         """Create the options flow."""
-        return VacancesScolairesOptionsFlowHandler(config_entry)
+        return VacancesScolairesOptionsFlowHandler()
         
 class VacancesScolairesOptionsFlowHandler(config_entries.OptionsFlow):
     """Handle options flow for Vacances Scolaires."""
