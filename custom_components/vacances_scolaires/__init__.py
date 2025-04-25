@@ -1,11 +1,8 @@
-from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from .const import DOMAIN, PLATFORMS, CONF_CREATE_CALENDAR
 from .coordinator import VacancesScolairesDataUpdateCoordinator
-
-import logging
-_LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Vacances Scolaires from a config entry."""
@@ -20,10 +17,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
-    # Forward platforms, including calendar if enabled
+    # Use async_forward_entry_setups instead of async_forward_entry_setup
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
-    if entry.options.get(CONF_CREATE_CALENDAR, entry.data.get(CONF_CREATE_CALENDAR)):
+    if entry.data.get(CONF_CREATE_CALENDAR):
         await hass.config_entries.async_forward_entry_setups(entry, ["calendar"])
 
     return True
@@ -35,7 +32,3 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN].pop(entry.entry_id)
 
     return unload_ok
-
-async def async_setup(hass: HomeAssistant, config: dict):
-    """Set up the Vacances Scolaires integration."""
-    return True
