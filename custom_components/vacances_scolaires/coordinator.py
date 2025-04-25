@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.config_entries import ConfigEntry
 
-from .const import DOMAIN, CONF_LOCATION, CONF_ZONE, CONF_API_SSL_CHECK, CONF_CONFIG_TYPE
+from .const import DOMAIN, CONF_LOCATION, CONF_ZONE, CONF_API_SSL_CHECK, CONF_CONFIG_TYPE, CONF_UPDATE_INTERVAL
 
 _LOGGER = logging.getLogger(__name__)
 
