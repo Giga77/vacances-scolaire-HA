@@ -42,9 +42,17 @@
             "init": {
                 "title": "Options des Vacances Scolaires",
                 "data": {
-                    "update_interval": "Intervalle de mise à jour (en heures)"
+                    "update_interval": "Intervalle de mise à jour (en heures)",
+                    "api_ssl_check": "Vérifier le certificat SSL du serveur API"
                 }
             }
+        },
+        "error": {
+            "cannot_connect": "Échec de connexion",
+            "invalid_auth": "Authentification invalide",
+            "unknown": "Erreur inattendue",
+            "location_required": "La localisation est requise lorsque le type est 'Localisation'",
+            "zone_required": "La zone est requise lorsque le type est 'Zone'"
         }
     },
     "entity": {
