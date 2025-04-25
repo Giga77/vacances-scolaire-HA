@@ -140,7 +140,10 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlow):
                 data=user_input,
             )
 
+        # On utilise les options existantes pour pré-remplir le formulaire
+        options = self.config_entry.options
+
         return self.async_show_form(
             step_id="init",
-            data_schema=_build_schema(self.config_entry.data, self.config_entry.options),
+            data_schema=_build_schema(self.config_entry.data, options),
         )
