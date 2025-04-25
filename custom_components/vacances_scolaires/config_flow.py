@@ -145,6 +145,3 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlow):
             step_id="init",
             data_schema=_build_options_schema({**self.config_entry.data, **self.config_entry.options}),
         )
-            step_id="init",
-            data_schema=_build_options_schema({**self.config_entry.data, **self.config_entry.options}),
-        )
