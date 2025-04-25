@@ -14,6 +14,15 @@
     },
     "abort": {
       "already_configured": "Device is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "api_ssl_check": "Check SSL certificate of API server"
+        }
+      }
     },
     "error": {
       "cannot_connect": "Failed to connect",
