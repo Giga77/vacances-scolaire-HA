@@ -1,6 +1,6 @@
 """Sensor platform for Vacances Scolaires."""
 from __future__ import annotations
-
+from typing import Any
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
