@@ -7,8 +7,6 @@ from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.config_entries import ConfigFlow, OptionsFlow, ConfigEntry, FlowResult
 from homeassistant.helpers.entity_registry import async_get
-from homeassistant.core import HomeAssistant
-from homeassistant.components.calendar import DOMAIN as CALENDAR_DOMAIN
 
 from .const import (
     DOMAIN,
@@ -120,6 +118,7 @@ class VacancesScolairesConfigFlow(ConfigFlow, domain=DOMAIN):
     @callback
     def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow:
         """Return the options flow handler."""
+        # On passe self.hass (instance de HomeAssistant) à l'OptionsFlowHandler
         return VacancesScolairesOptionsFlowHandler(config_entry)
 
 class VacancesScolairesOptionsFlowHandler(OptionsFlow):
@@ -134,15 +133,15 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlow):
         """Affiche le formulaire des options avec les options modifiables"""
         if user_input is not None:
             # Initialisation du registre d'entités lorsque l'instance est prête
-            self.entity_registry = async_get(self.hass)
+            self.entity_registry = await async_get(self.hass)
 
-            # Ne pas permettre la modification du calendrier une fois configuré
-            # Créer ou mettre à jour l'entrée dans la configuration, mais ne pas modifier l'option calendrier
+            # Créer ou mettre à jour l'entrée dans la configuration sans gérer les calendriers
             return self.async_create_entry(
                 title="",
                 data=user_input,
             )
 
+        # Si aucune donnée n'est fournie par l'utilisateur, afficher le formulaire
         return self.async_show_form(
             step_id="init",
             data_schema=_build_options_schema({**self.config_entry.data, **self.config_entry.options}),
