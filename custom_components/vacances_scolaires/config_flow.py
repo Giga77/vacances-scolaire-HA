@@ -110,8 +110,5 @@ class VacancesScolairesOptionsFlowHandler(config_entries.OptionsFlow):
             }),
         )
 
-    # Cette méthode permet à Home Assistant de reconnaître ce gestionnaire d'options.
-    @staticmethod
-    @callback
-    def async_get_options_flow(config_entry: config_entries.ConfigEntry) -> VacancesScolairesOptionsFlowHandler:
-        return VacancesScolairesOptionsFlowHandler(config_entry)
+async def async_get_options_flow(config_entry: config_entries.ConfigEntry):
+    return VacancesScolairesOptionsFlowHandler(config_entry)
