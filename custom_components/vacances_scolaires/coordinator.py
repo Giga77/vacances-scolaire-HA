@@ -45,12 +45,18 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize the data updater."""
-        self.config = entry.data
-        update_interval = timedelta(hours=self.config.get("update_interval", 12))
-        self.api_ssl_check: bool = self.config.get(CONF_API_SSL_CHECK, True)
-
-        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
+        self.entry = entry
+        self.config = {**entry.data, **entry.options}  # fusion data + options
         
+        self.api_ssl_check: bool = self.config.get(CONF_API_SSL_CHECK, True)
+        super().__init__(
+        hass,
+        _LOGGER,
+        name=DOMAIN,
+        update_interval=timedelta(hours=self.config.get("update_interval", 12)),
+        )
+        
+    
     async def _create_session(self) -> ClientSession:
         """Create aiohttp session with optional SSL verification."""
         connector = TCPConnector(ssl=self.api_ssl_check)
@@ -72,40 +78,42 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
 
         try:
             async with async_timeout.timeout(10):
-                async with aiohttp.ClientSession() as session:
+                session = await self._create_session()
+                try:
                     async with session.get(api_url) as response:
                         if response.status != 200:
                             raise UpdateFailed(f"Error communicating with API: {response.status}")
                         data = await response.json()
-                        
+        
                         if not data.get("results"):
                             raise UpdateFailed("No data received from API")
-                        
+        
                         result = data["results"][0]
                         start_date = datetime.fromisoformat(result['start_date']).replace(tzinfo=ZoneInfo("UTC"))
                         end_date = datetime.fromisoformat(result['end_date']).replace(tzinfo=ZoneInfo("UTC"))
                         today = datetime.now(ZoneInfo("UTC")).replace(hour=0, minute=0, second=0, microsecond=0)
                         on_vacation = start_date <= today <= end_date
-
+        
                         if on_vacation:
                             state = f"{result['zones']} - Holidays"
                         else:
                             state = f"{result['zones']} - Work"
-
-                        # Formatage des dates avec traduction des mois en français
+        
                         start_date_formatted = traduire_mois(start_date.strftime("%d %B %Y à %H:%M:%S %Z"))
                         end_date_formatted = traduire_mois(end_date.strftime("%d %B %Y à %H:%M:%S %Z"))
-
+        
                         return {
                             "state": state,
-                            "start_date": start_date_formatted,  # Version traduite
-                            "end_date": end_date_formatted,  # Version traduite
+                            "start_date": start_date_formatted,
+                            "end_date": end_date_formatted,
                             "description": result['description'],
                             "location": result['location'],
                             "zone": result['zones'],
                             "année_scolaire": result['annee_scolaire'],
                             "on_vacation": on_vacation
                         }
+                finally:
+                    await session.close()
         except aiohttp.ClientError as err:
             raise UpdateFailed(f"Error communicating with API: {err}")
         except asyncio.TimeoutError:
