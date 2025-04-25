@@ -20,29 +20,34 @@ from .const import (
     ZONE_OPTIONS
 )
 
-def _build_schema(data: dict, options: dict) -> vol.Schema:
-    """Helper to build the schema for user/options form."""
-    config_type = data.get(CONF_CONFIG_TYPE, "location")
-    schema = {}
-
-    if config_type == "location":
-        schema = {
-            vol.Required(CONF_CONFIG_TYPE, default="location"): vol.In(["location", "zone"]),
-            vol.Required(CONF_LOCATION, default=data.get(CONF_LOCATION, DEFAULT_LOCATION)): str,
-        }
-    else:
-        schema = {
+def _build_user_schema(config_type: str = "location", data: dict = {}) -> vol.Schema:
+    """Schema for initial config."""
+    if config_type == "zone":
+        return vol.Schema({
             vol.Required(CONF_CONFIG_TYPE, default="zone"): vol.In(["location", "zone"]),
             vol.Required(CONF_ZONE, default=data.get(CONF_ZONE, ZONE_OPTIONS[0])): vol.In(ZONE_OPTIONS),
-        }
+            vol.Required(CONF_UPDATE_INTERVAL, default=data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)): int,
+            vol.Optional(CONF_CREATE_CALENDAR, default=data.get(CONF_CREATE_CALENDAR, False)): bool,
+            vol.Required(CONF_API_SSL_CHECK, default=data.get(CONF_API_SSL_CHECK, True)): bool,
+        })
 
-    schema.update({
+    return vol.Schema({
+        vol.Required(CONF_CONFIG_TYPE, default="location"): vol.In(["location", "zone"]),
+        vol.Required(CONF_LOCATION, default=data.get(CONF_LOCATION, DEFAULT_LOCATION)): str,
+        vol.Required(CONF_UPDATE_INTERVAL, default=data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)): int,
+        vol.Optional(CONF_CREATE_CALENDAR, default=data.get(CONF_CREATE_CALENDAR, False)): bool,
+        vol.Required(CONF_API_SSL_CHECK, default=data.get(CONF_API_SSL_CHECK, True)): bool,
+    })
+
+
+def _build_options_schema(options: dict) -> vol.Schema:
+    """Schema for options flow (no config_type, location or zone)."""
+    return vol.Schema({
         vol.Required(CONF_UPDATE_INTERVAL, default=options.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)): int,
         vol.Optional(CONF_CREATE_CALENDAR, default=options.get(CONF_CREATE_CALENDAR, False)): bool,
         vol.Required(CONF_API_SSL_CHECK, default=options.get(CONF_API_SSL_CHECK, True)): bool,
     })
 
-    return vol.Schema(schema)
 
 class VacancesScolairesConfigFlow(ConfigFlow, domain=DOMAIN):
     """Config flow for Vacances Scolaires."""
@@ -116,7 +121,6 @@ class VacancesScolairesConfigFlow(ConfigFlow, domain=DOMAIN):
         """Return the options flow handler."""
         return VacancesScolairesOptionsFlowHandler(config_entry)
 
-
 class VacancesScolairesOptionsFlowHandler(OptionsFlow):
     """Handle Vacances Scolaires options."""
 
@@ -124,26 +128,14 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlow):
         self.config_entry = config_entry
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
-        """Handle the options flow (modification)."""
+        """Show options form with only editable options."""
         if user_input is not None:
-            # Mise à jour des options du ConfigEntry
-            self.hass.config_entries.async_update_entry(
-                self.config_entry,
-                options=user_input
-            )
-            # Recharger la configuration pour appliquer les changements
-            self.hass.async_create_task(
-                self.hass.config_entries.async_reload(self.config_entry.entry_id)
-            )
             return self.async_create_entry(
                 title="",
                 data=user_input,
             )
 
-        # On utilise les options existantes pour pré-remplir le formulaire
-        options = self.config_entry.options
-
         return self.async_show_form(
             step_id="init",
-            data_schema=_build_schema(self.config_entry.data, options),
+            data_schema=_build_options_schema({**self.config_entry.data, **self.config_entry.options}),
         )
