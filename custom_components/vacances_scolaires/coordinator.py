@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.config_entries import ConfigEntry
 
-from .const import DOMAIN, CONF_LOCATION, CONF_ZONE, CONF_CONFIG_TYPE
+from .const import DOMAIN, CONF_LOCATION, CONF_ZONE, CONF_API_SSL_CHECK, CONF_CONFIG_TYPE
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -47,6 +47,7 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
         """Initialize the data updater."""
         self.config = entry.data
         update_interval = timedelta(hours=self.config.get("update_interval", 12))
+        api_ssl_check: bool = True,
 
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
 
