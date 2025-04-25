@@ -5,8 +5,7 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.core import callback
-from homeassistant.data_entry_flow import FlowResult, ConfigFlow, OptionsFlow
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.config_entries import ConfigFlow, OptionsFlow, ConfigEntry, FlowResult
 
 from .const import (
     DOMAIN,
