@@ -5,6 +5,7 @@ from typing import Any
 import voluptuous as vol
 
 from homeassistant import config_entries
+from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
@@ -17,7 +18,7 @@ from .const import (
     DEFAULT_LOCATION,
     DEFAULT_UPDATE_INTERVAL,
     CONF_API_SSL_CHECK,
-    ZONE_OPTIONS
+    ZONE_OPTIONS,
 )
 
 class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -46,9 +47,7 @@ class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle the location step."""
-        errors = {}
         if user_input is not None:
-            # Vous pouvez ajouter ici une validation pour la localisation si nécessaire
             return self.async_create_entry(
                 title=f"Vacances Scolaires ({user_input[CONF_LOCATION]})",
                 data={**user_input, CONF_CONFIG_TYPE: "location"}
@@ -62,7 +61,6 @@ class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional(CONF_CREATE_CALENDAR, default=False): bool,
                 vol.Required(CONF_API_SSL_CHECK, default=True): bool,
             }),
-            errors=errors
         )
 
     async def async_step_zone(
@@ -90,30 +88,30 @@ class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             }),
             errors=errors
         )
+
 class VacancesScolairesOptionsFlowHandler(config_entries.OptionsFlow):
     """Handle the options flow for Vacances Scolaires."""
 
-    def __init__(self, config_entry):
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         self.config_entry = config_entry
 
-    async def async_step_init(self, user_input=None):
-        """Handle the options configuration step."""
+    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+        """Manage Vacances Scolaires options."""
         if user_input is not None:
-            # Si des données ont été fournies, on met à jour les options
             return self.async_create_entry(title="", data=user_input)
 
-        # On récupère les options actuelles de la configuration
-        current = self.config_entry.options
+        options = self.config_entry.options
 
-        # Affichage du formulaire pour modifier les options
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema({
-                vol.Required(CONF_API_SSL_CHECK, default=current.get(CONF_API_SSL_CHECK, True)): bool,
-                vol.Required(CONF_UPDATE_INTERVAL, default=current.get(CONF_UPDATE_INTERVAL, 12)): int,
-            })
+                vol.Required(CONF_API_SSL_CHECK, default=options.get(CONF_API_SSL_CHECK, True)): bool,
+                vol.Required(CONF_UPDATE_INTERVAL, default=options.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)): int,
+            }),
         )
 
-async def async_get_options_flow(config_entry):
-    """Retourne le gestionnaire d'options pour cette configuration."""
-    return VacancesScolairesOptionsFlowHandler(config_entry)
+    # Cette méthode permet à Home Assistant de reconnaître ce gestionnaire d'options.
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: config_entries.ConfigEntry) -> VacancesScolairesOptionsFlowHandler:
+        return VacancesScolairesOptionsFlowHandler(config_entry)
