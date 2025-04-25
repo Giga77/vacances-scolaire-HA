@@ -44,7 +44,6 @@ def _build_options_schema(options: dict) -> vol.Schema:
     """Schema for options flow (no config_type, location or zone)."""
     return vol.Schema({
         vol.Required(CONF_UPDATE_INTERVAL, default=options.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)): int,
-        vol.Optional(CONF_CREATE_CALENDAR, default=options.get(CONF_CREATE_CALENDAR, False)): bool,
         vol.Required(CONF_API_SSL_CHECK, default=options.get(CONF_API_SSL_CHECK, True)): bool,
     })
 
