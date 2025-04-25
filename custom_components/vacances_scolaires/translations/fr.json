@@ -43,7 +43,7 @@
                 "title": "Options des Vacances Scolaires",
                 "data": {
                     "update_interval": "Intervalle de mise à jour (en heures)",
-                    "api_ssl_check": "Vérifier le certificat SSL du serveur API"
+                    "verify_ssl": "Vérifier le certificat SSL du serveur API"
                 }
             }
         },
