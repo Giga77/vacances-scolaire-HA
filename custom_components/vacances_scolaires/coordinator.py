@@ -2,7 +2,7 @@ import logging
 from datetime import timedelta, date, datetime
 from typing import Any
 import asyncio
-from aiohttp import ClientSession, TCPConnector
+from aiohttp import ClientSession, TCPConnector, ClientError
 import async_timeout
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
