@@ -59,6 +59,7 @@ class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_LOCATION, default=DEFAULT_LOCATION): str,
                 vol.Required(CONF_UPDATE_INTERVAL, default=DEFAULT_UPDATE_INTERVAL): int,
                 vol.Optional(CONF_CREATE_CALENDAR, default=False): bool,
+                vol.Required(CONF_API_SSL_CHECK, default=True): bool,
             }),
             errors=errors
         )
