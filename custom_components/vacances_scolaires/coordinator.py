@@ -70,7 +70,7 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
         today = date.today().isoformat()
         config_type = self.entry.options.get(CONF_CONFIG_TYPE, "location")  # Récupérer les options mises à jour
         if config_type == "location":
-            location = self.entry.options[CONF_LOCATION]
+            location = self.entry.options.get(CONF_LOCATION, DEFAULT_LOCATION)
             api_url = f"https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records?where=end_date%3E%22{today}%22&order_by=start_date%20ASC&limit=1&refine=location%3A{location}"
         elif config_type == "zone":
             zone = self.entry.options[CONF_ZONE]
