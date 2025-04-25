@@ -131,8 +131,8 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlow):
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Affiche le formulaire des options avec les options modifiables"""
         if user_input is not None:
-            # Initialisation du registre d'entités lorsque l'instance est prête
-            self.entity_registry = await async_get(self.hass)
+            # Initialisation du registre d'entités sans 'await'
+            self.entity_registry = async_get(self.hass)
 
             # Créer ou mettre à jour l'entrée dans la configuration sans gérer les calendriers
             return self.async_create_entry(
@@ -142,6 +142,9 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlow):
 
         # Si aucune donnée n'est fournie par l'utilisateur, afficher le formulaire
         return self.async_show_form(
+            step_id="init",
+            data_schema=_build_options_schema({**self.config_entry.data, **self.config_entry.options}),
+        )
             step_id="init",
             data_schema=_build_options_schema({**self.config_entry.data, **self.config_entry.options}),
         )
