@@ -51,12 +51,10 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
 
         # Récupération dynamique de l'intervalle (options priorisées sur data)
         update_interval = timedelta(
-            hours=self.options.get(
-                CONF_UPDATE_INTERVAL, 
-                self.config.get(CONF_UPDATE_INTERVAL, 12)  # Fallback à 12h si absent
-            )
+            hours=(self.options.get(CONF_UPDATE_INTERVAL)
+                   if self.options and CONF_UPDATE_INTERVAL in self.options
+                   else self.config.get(CONF_UPDATE_INTERVAL, 12))
         )
-
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
 
     async def _async_update_data(self) -> dict[str, Any]:
@@ -66,7 +64,7 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
             CONF_VERIFY_SSL,
             self.config.get(CONF_VERIFY_SSL, True)
         )
-
+        _LOGGER.debug(f"Appel API avec verify_ssl={verify_ssl}")
         today = date.today().isoformat()
         config_type = self.config.get(CONF_CONFIG_TYPE, "location")
         if config_type == "location":
