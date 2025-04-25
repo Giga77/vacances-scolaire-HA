@@ -7,7 +7,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from datetime import datetime, timedelta
-from typing import Any
+from zoneinfo import ZoneInfo
 from .const import DOMAIN, CONF_LOCATION, CONF_ZONE, CONF_CONFIG_TYPE, ATTRIBUTION, ATTR_START_DATE, ATTR_END_DATE, ATTR_DESCRIPTION, ATTR_LOCATION, ATTR_ZONE, ATTR_ANNEE_SCOLAIRE, ATTR_EN_VACANCES
 from .coordinator import VacancesScolairesDataUpdateCoordinator
 
@@ -52,17 +52,21 @@ class VacancesScolairesSensor(CoordinatorEntity, SensorEntity):
         """Initialize the sensor."""
         super().__init__(coordinator)
         self.entry = entry
-        config_type = entry.data.get(CONF_CONFIG_TYPE, "location")
+        self._update_config()
+
+    def _update_config(self):
+        """Met à jour la configuration et les attributs uniques des capteurs selon la config."""
+        config_type = self.entry.data.get(CONF_CONFIG_TYPE, "location")
         if config_type == "location":
-            location = entry.data.get(CONF_LOCATION, "Unknown")
+            location = self.entry.data.get(CONF_LOCATION, "Unknown")
             self._attr_unique_id = f"{DOMAIN}_{config_type}_{location}"
             self._attr_name = f"Vacances Scolaires {location}"
         else:
-            zone = entry.data.get(CONF_ZONE, "Unknown")
+            zone = self.entry.data.get(CONF_ZONE, "Unknown")
             self._attr_unique_id = f"{DOMAIN}_{config_type}_{zone}"
             self._attr_name = f"Vacances Scolaires {zone}"
         self._attr_attribution = ATTRIBUTION
-
+        
     @property
     def state(self) -> str | None:
         """Return the state of the sensor."""
