@@ -6,7 +6,7 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.config_entries import ConfigFlow, OptionsFlow, ConfigEntry, FlowResult
-from homeassistant.helpers.entity_registry import async_get_registry
+from homeassistant.helpers.entity_registry import async_get
 from homeassistant.core import HomeAssistant
 from homeassistant.components.calendar import DOMAIN as CALENDAR_DOMAIN
 
@@ -135,7 +135,7 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlow):
         """Affiche le formulaire des options avec les options modifiables"""
         if user_input is not None:
             # Initialisation du registre d'entités lorsque l'instance est prête
-            self.entity_registry = await async_get_registry(self.hass)
+            self.entity_registry = await async_get(self.hass)
 
             # Vérification si le calendrier doit être supprimé
             create_calendar = user_input.get(CONF_CREATE_CALENDAR, False)
