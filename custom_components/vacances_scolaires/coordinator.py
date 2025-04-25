@@ -118,7 +118,7 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
 
         except asyncio.TimeoutError:
             raise UpdateFailed("Délai d'attente dépassé lors de la récupération des données de Vacances Scolaires.")
-        except aiohttp.ClientError as e:
+        except ClientError as e:
             raise UpdateFailed(f"Erreur lors de la communication avec l'API: {e}")
         except ValueError as e:
             raise UpdateFailed(f"Erreur dans la configuration: {e}")
