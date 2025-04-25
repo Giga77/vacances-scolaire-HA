@@ -85,8 +85,8 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
         
         try:
             # Effectuer une requête asynchrone avec un délai d'attente
-            async with async_timeout.timeout(10):
-                async with await self._create_session().get(api_url) as response:
+            async with self._create_session() as session:
+                async with session.get(api_url) as response:
                     response.raise_for_status()  # Si la réponse est une erreur, une exception sera levée
                     data = await response.json()  # Retourner les données JSON
 
