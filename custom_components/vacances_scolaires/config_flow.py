@@ -6,7 +6,7 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.config_entries import ConfigFlow, OptionsFlow, ConfigEntry, FlowResult
-from homeassistant.helpers.entity_registry import async_get
+from homeassistant.helpers.entity_registry import async_get_registry
 from homeassistant.core import HomeAssistant
 from homeassistant.components.calendar import DOMAIN as CALENDAR_DOMAIN
 
@@ -124,9 +124,10 @@ class VacancesScolairesConfigFlow(ConfigFlow, domain=DOMAIN):
 
 class VacancesScolairesOptionsFlowHandler(OptionsFlow):
     """Handle Vacances Scolaires options."""
-
-    def __init__(self, config_entry: ConfigEntry):
+    
+    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry):
         """Initialisation de l'option de flux avec l'entrée de configuration"""
+        self.hass = hass  # Utilisation de hass pour accéder à la configuration
         self.config_entry = config_entry
         self.entity_registry = None
 
@@ -134,10 +135,25 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlow):
         """Affiche le formulaire des options avec les options modifiables"""
         if user_input is not None:
             # Initialisation du registre d'entités lorsque l'instance est prête
-            self.entity_registry = async_get(self.hass)
+            self.entity_registry = await async_get_registry(self.hass)
 
-            # Ne pas permettre la modification du calendrier une fois configuré
-            # Créer ou mettre à jour l'entrée dans la configuration, mais ne pas modifier l'option calendrier
+            # Vérification si le calendrier doit être supprimé
+            create_calendar = user_input.get(CONF_CREATE_CALENDAR, False)
+
+            calendar_entity_id = f"calendar.{self.config_entry.entry_id}_vacances_scolaires"
+            
+            if not create_calendar:
+                # Si l'utilisateur désactive le calendrier, supprimer l'entité calendrier si elle existe
+                if self.entity_registry.async_is_registered(calendar_entity_id):
+                    _LOGGER.info(f"Suppression de l'entité calendrier: {calendar_entity_id}")
+                    self.entity_registry.async_remove(calendar_entity_id)
+            elif create_calendar:
+                # Si l'utilisateur veut créer le calendrier, mais que l'entité calendrier existe déjà, ne rien faire
+                if not self.entity_registry.async_is_registered(calendar_entity_id):
+                    _LOGGER.info(f"Création de l'entité calendrier: {calendar_entity_id}")
+                    # Code pour recréer l'entité calendrier ici (si nécessaire)
+
+            # Créer ou mettre à jour l'entrée dans la configuration
             return self.async_create_entry(
                 title="",
                 data=user_input,
