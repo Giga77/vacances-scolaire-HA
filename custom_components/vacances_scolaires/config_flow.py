@@ -6,7 +6,8 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.config_entries import ConfigFlow, OptionsFlow, ConfigEntry, FlowResult
-from homeassistant.helpers import entity_registry
+from homeassistant.helpers.entity_registry import async_get_registry
+from homeassistant.core import HomeAssistant
 
 from .const import (
     DOMAIN,
@@ -127,18 +128,21 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlow):
 
     def __init__(self, config_entry: ConfigEntry):
         self.config_entry = config_entry
-        self.entity_registry = entity_registry.async_get(self.hass)
+        self.entity_registry = None  # Initialisé après hass est prêt
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Show options form with only editable options."""
         if user_input is not None:
+            # Accéder à self.hass ici lorsque l'instance est prête
+            self.entity_registry = async_get_registry(self.hass)
+            
             # Si le calendrier est désactivé, supprimer le calendrier
             if not user_input.get(CONF_CREATE_CALENDAR, False):
                 # Suppression du calendrier si existant
                 calendar_entity_id = f"calendar.{self.config_entry.entry_id}_vacances_scolaires"
                 if self.entity_registry.async_is_registered(calendar_entity_id):
                     self.entity_registry.async_remove(calendar_entity_id)
-                    
+
             return self.async_create_entry(
                 title="",
                 data=user_input,
