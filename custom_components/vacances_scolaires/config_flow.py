@@ -30,7 +30,6 @@ def _build_user_schema(config_type: str = "location", data: dict = {}) -> vol.Sc
             vol.Required(CONF_CONFIG_TYPE, default="zone"): vol.In(["location", "zone"]),
             vol.Required(CONF_ZONE, default=data.get(CONF_ZONE, ZONE_OPTIONS[0])): vol.In(ZONE_OPTIONS),
             vol.Required(CONF_UPDATE_INTERVAL, default=data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)): int,
-            vol.Optional(CONF_CREATE_CALENDAR, default=data.get(CONF_CREATE_CALENDAR, False)): bool,
             vol.Required(CONF_API_SSL_CHECK, default=data.get(CONF_API_SSL_CHECK, True)): bool,
         })
 
@@ -38,16 +37,13 @@ def _build_user_schema(config_type: str = "location", data: dict = {}) -> vol.Sc
         vol.Required(CONF_CONFIG_TYPE, default="location"): vol.In(["location", "zone"]),
         vol.Required(CONF_LOCATION, default=data.get(CONF_LOCATION, DEFAULT_LOCATION)): str,
         vol.Required(CONF_UPDATE_INTERVAL, default=data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)): int,
-        vol.Optional(CONF_CREATE_CALENDAR, default=data.get(CONF_CREATE_CALENDAR, False)): bool,
         vol.Required(CONF_API_SSL_CHECK, default=data.get(CONF_API_SSL_CHECK, True)): bool,
     })
-
 
 def _build_options_schema(options: dict) -> vol.Schema:
     """Schema for options flow (no config_type, location or zone)."""
     return vol.Schema({
         vol.Required(CONF_UPDATE_INTERVAL, default=options.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)): int,
-        vol.Optional(CONF_CREATE_CALENDAR, default=options.get(CONF_CREATE_CALENDAR, False)): bool,
         vol.Required(CONF_API_SSL_CHECK, default=options.get(CONF_API_SSL_CHECK, True)): bool,
     })
 
@@ -78,6 +74,7 @@ class VacancesScolairesConfigFlow(ConfigFlow, domain=DOMAIN):
         """Handle the location step."""
         errors = {}
         if user_input is not None:
+            # Créer l'entrée de configuration avec la possibilité de créer un calendrier
             return self.async_create_entry(
                 title=f"Vacances Scolaires ({user_input[CONF_LOCATION]})",
                 data={**user_input, CONF_CONFIG_TYPE: "location"}
@@ -102,6 +99,7 @@ class VacancesScolairesConfigFlow(ConfigFlow, domain=DOMAIN):
             if zone not in ZONE_OPTIONS:
                 errors[CONF_ZONE] = "invalid_zone"
             else:
+                # Créer l'entrée de configuration avec la possibilité de créer un calendrier
                 return self.async_create_entry(
                     title=f"Vacances Scolaires ({zone})",
                     data={**user_input, CONF_CONFIG_TYPE: "zone"}
@@ -138,23 +136,8 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlow):
             # Initialisation du registre d'entités lorsque l'instance est prête
             self.entity_registry = async_get(self.hass)
 
-            # Vérification si le calendrier doit être supprimé
-            create_calendar = user_input.get(CONF_CREATE_CALENDAR, False)
-
-            calendar_entity_id = f"calendar.{self.config_entry.entry_id}_vacances_scolaires"
-            
-            if not create_calendar:
-                # Si l'utilisateur désactive le calendrier, supprimer l'entité calendrier si elle existe
-                if self.entity_registry.async_is_registered(calendar_entity_id):
-                    _LOGGER.info(f"Suppression de l'entité calendrier: {calendar_entity_id}")
-                    self.entity_registry.async_remove(calendar_entity_id)
-            elif create_calendar:
-                # Si l'utilisateur veut créer le calendrier, mais que l'entité calendrier existe déjà, ne rien faire
-                if not self.entity_registry.async_is_registered(calendar_entity_id):
-                    _LOGGER.info(f"Création de l'entité calendrier: {calendar_entity_id}")
-                    # Code pour recréer l'entité calendrier ici (si nécessaire)
-
-            # Créer ou mettre à jour l'entrée dans la configuration
+            # Ne pas permettre la modification du calendrier une fois configuré
+            # Créer ou mettre à jour l'entrée dans la configuration, mais ne pas modifier l'option calendrier
             return self.async_create_entry(
                 title="",
                 data=user_input,
