@@ -115,6 +115,12 @@ class VacancesScolairesOptionsFlowHandler(config_entries.OptionsFlow):
             if user_input.get(CONF_UPDATE_INTERVAL) != old_options.get(CONF_UPDATE_INTERVAL, self.config_entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)):
                 _LOGGER.info(f"Update interval changed from {old_options.get(CONF_UPDATE_INTERVAL, self.config_entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL))} to {user_input.get(CONF_UPDATE_INTERVAL)}")
 
+            # Crée l'entrée avec les nouvelles options
+            self.hass.config_entries.async_update_entry(self.config_entry, options=user_input)
+
+            # déclenche un reload automatique
+            await self.hass.config_entries.async_reload(self.config_entry.entry_id)
+            
             return self.async_create_entry(title="", data=user_input)
 
         return self.async_show_form(
