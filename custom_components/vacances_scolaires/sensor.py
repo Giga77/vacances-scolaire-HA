@@ -135,7 +135,7 @@ class VacancesScolairesAujourdHuiSensor(CoordinatorEntity, SensorEntity):
     def device_info(self):
         return {
             "identifiers": {(DOMAIN, self._entry_id)},
-            "name": "Vacances Scolaires Today",
+            "name": "Vacances Scolaires",
             "manufacturer": "Master13011",
             "model": "API",
         }
@@ -179,7 +179,7 @@ class VacancesScolairesDemainSensor(CoordinatorEntity, SensorEntity):
     def device_info(self):
         return {
             "identifiers": {(DOMAIN, self._entry_id)},
-            "name": "Vacances Scolaires Demain",
+            "name": "Vacances Scolaires",
             "manufacturer": "Master13011",
             "model": "API",
         }
