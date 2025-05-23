@@ -83,6 +83,15 @@ class VacancesScolairesSensor(CoordinatorEntity, SensorEntity):
             }
         return {}
 
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, self._entry_id)},
+            "name": "Vacances Scolaires",
+            "manufacturer": "Master13011",
+            "model": "API",
+        }
+
 # Capteur pour savoir si aujourd'hui on est en vacances
 class VacancesScolairesAujourdHuiSensor(CoordinatorEntity, SensorEntity):
     """Sensor for 'Are we on vacation today?'."""
@@ -121,7 +130,15 @@ class VacancesScolairesAujourdHuiSensor(CoordinatorEntity, SensorEntity):
             else:
                 return "Pas en vacances"
         return None
-
+        
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, self._entry_id)},
+            "name": "Vacances Scolaires Today",
+            "manufacturer": "Master13011",
+            "model": "API",
+        }
 class VacancesScolairesDemainSensor(CoordinatorEntity, SensorEntity):
     """Sensor for 'Are we on vacation tomorrow?'."""
     
@@ -158,3 +175,11 @@ class VacancesScolairesDemainSensor(CoordinatorEntity, SensorEntity):
             else:
                 return "Pas en vacances"
         return None
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, self._entry_id)},
+            "name": "Vacances Scolaires Demain",
+            "manufacturer": "Master13011",
+            "model": "API",
+        }
