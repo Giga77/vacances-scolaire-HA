@@ -32,6 +32,7 @@ class VacancesScolairesCalendar(CoordinatorEntity, CalendarEntity):
         super().__init__(coordinator)
         self._attr_name = f"Vacances Scolaires {config_entry.title}"
         self._attr_unique_id = f"{config_entry.entry_id}_calendar"
+        self.entry_id = config_entry.entry_id
 
     @property
     def event(self):
@@ -78,6 +79,15 @@ class VacancesScolairesCalendar(CoordinatorEntity, CalendarEntity):
                 )
                 events.append(event)
         return events
+        
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {(DOMAIN, self.entry_id)},
+            "name": "Vacances Scolaires",
+            "manufacturer": "Master13011",
+            "model": "API",
+        }
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Vacances Scolaires Calendar platform."""
