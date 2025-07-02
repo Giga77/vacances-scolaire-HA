@@ -24,7 +24,11 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
 1. Assurez-vous que [HACS](https://hacs.xyz) est installé.
 
 2. Ouvrez HACS.
+   
+3. Cherchez directement : vacances scolaire HA
 
+Ou
+   
 3. Cliquez sur les trois points en haut à droite et choisissez "Dépôts personnalisés".
 
 4. Ajoutez le dépôt :
