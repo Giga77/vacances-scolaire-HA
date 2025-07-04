@@ -25,7 +25,7 @@ Cette intégration personnalisée pour Home Assistant permet aux utilisateurs de
 
 2. Ouvrez HACS.
    
-3. Cherchez directement : vacances scolaire HA
+3. Cherchez directement : vacances scolaire
 
 Ou
    
