@@ -3,6 +3,7 @@
 ![SNCF API](https://img.shields.io/badge/SNCF%20API-v1-lightgrey)
 ![Custom Component](https://img.shields.io/badge/Custom%20Component-oui-orange)
 ![Licence MIT](https://img.shields.io/badge/Licence-MIT-green)
+
 Intégration Vacances Scolaire FR pour Home Assistant
 
 Forum App : https://forum.hacf.fr/t/integration-vacances-scolaires/58499
