@@ -7,7 +7,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, cast
 from .const import DOMAIN, CONF_LOCATION, CONF_ZONE, CONF_CONFIG_TYPE, ATTRIBUTION, ATTR_START_DATE, ATTR_END_DATE, ATTR_DESCRIPTION, ATTR_LOCATION, ATTR_ZONE, ATTR_ANNEE_SCOLAIRE, ATTR_EN_VACANCES
 from .coordinator import VacancesScolairesDataUpdateCoordinator
 
@@ -35,10 +35,15 @@ def convert_to_iso_format(date_str: str) -> str:
     }
 
     # Extraire les parties de la date
-    day, month_str, year, _, time_str, _ = date_str.split(" ")
+    parts = date_str.split(" ")
+    if len(parts) < 6:
+        # Valeur invalide
+        return ""
+
+    day, month_str, year, _, time_str, _ = parts
 
     # Convertir le mois en chiffre
-    month = mois[month_str.lower()]
+    month = mois.get(month_str.lower(), "01")
 
     # Créer la chaîne avec le format ISO attendu
     iso_format_date = f"{year}-{month}-{day}T{time_str}"
@@ -92,7 +97,6 @@ class VacancesScolairesSensor(CoordinatorEntity, SensorEntity):
             "model": "API",
         }
 
-# Capteur pour savoir si aujourd'hui on est en vacances
 class VacancesScolairesAujourdHuiSensor(CoordinatorEntity, SensorEntity):
     """Sensor for 'Are we on vacation today?'."""
     
@@ -111,25 +115,24 @@ class VacancesScolairesAujourdHuiSensor(CoordinatorEntity, SensorEntity):
             self._attr_name = f"Vacances Scolaires Aujourd'hui {zone}"
         self._attr_attribution = ATTRIBUTION        
 
-
     @property
     def state(self) -> str | None:
         """Return the state of the sensor."""
-        if self.coordinator.data:
-            start_date_str = self.coordinator.data.get("start_date")
-            end_date_str = self.coordinator.data.get("end_date")
+        if not self.coordinator.data:
+            return None
 
-            # Convertir les dates en format ISO
-            start_date = datetime.fromisoformat(convert_to_iso_format(start_date_str))
-            end_date = datetime.fromisoformat(convert_to_iso_format(end_date_str))
+        start_date_str = self.coordinator.data.get("start_date")
+        end_date_str = self.coordinator.data.get("end_date")
+        if not isinstance(start_date_str, str) or not isinstance(end_date_str, str):
+            return None
 
-            today = datetime.now()
-            # Vérifier si aujourd'hui est dans la période des vacances
-            if start_date <= today <= end_date:
-                return "En vacances"
-            else:
-                return "Pas en vacances"
-        return None
+        start_date = datetime.fromisoformat(convert_to_iso_format(start_date_str))
+        end_date = datetime.fromisoformat(convert_to_iso_format(end_date_str))
+
+        today = datetime.now()
+        if start_date <= today <= end_date:
+            return "En vacances"
+        return "Pas en vacances"
         
     @property
     def device_info(self):
@@ -139,6 +142,7 @@ class VacancesScolairesAujourdHuiSensor(CoordinatorEntity, SensorEntity):
             "manufacturer": "Master13011",
             "model": "API",
         }
+
 class VacancesScolairesDemainSensor(CoordinatorEntity, SensorEntity):
     """Sensor for 'Are we on vacation tomorrow?'."""
     
@@ -160,21 +164,22 @@ class VacancesScolairesDemainSensor(CoordinatorEntity, SensorEntity):
     @property
     def state(self) -> str | None:
         """Return the state of the sensor."""
-        if self.coordinator.data:
-            start_date_str = self.coordinator.data.get("start_date")
-            end_date_str = self.coordinator.data.get("end_date")
+        if not self.coordinator.data:
+            return None
 
-            # Convertir les dates en format ISO
-            start_date = datetime.fromisoformat(convert_to_iso_format(start_date_str))
-            end_date = datetime.fromisoformat(convert_to_iso_format(end_date_str))
+        start_date_str = self.coordinator.data.get("start_date")
+        end_date_str = self.coordinator.data.get("end_date")
+        if not isinstance(start_date_str, str) or not isinstance(end_date_str, str):
+            return None
 
-            tomorrow = datetime.now() + timedelta(days=1)
-            # Vérifier si demain est dans la période des vacances
-            if start_date <= tomorrow <= end_date:
-                return "En vacances"
-            else:
-                return "Pas en vacances"
-        return None
+        start_date = datetime.fromisoformat(convert_to_iso_format(start_date_str))
+        end_date = datetime.fromisoformat(convert_to_iso_format(end_date_str))
+
+        tomorrow = datetime.now() + timedelta(days=1)
+        if start_date <= tomorrow <= end_date:
+            return "En vacances"
+        return "Pas en vacances"
+
     @property
     def device_info(self):
         return {

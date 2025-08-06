@@ -5,7 +5,7 @@ from typing import Any
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.data_entry_flow import FlowResult
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 
 import logging
 
@@ -24,14 +24,14 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class VacancesScolairesConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Vacances Scolaires."""
 
     VERSION = 1
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Handle the initial step."""
         if user_input is None:
             return self.async_show_form(
@@ -48,11 +48,11 @@ class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_location(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Handle the location step."""
-        errors = {}
+        errors: dict[str, str] = {}
         if user_input is not None:
-            # Vous pouvez ajouter ici une validation pour la localisation si nécessaire
+            # Validation possible ici
             return self.async_create_entry(
                 title=f"Vacances Scolaires ({user_input[CONF_LOCATION]})",
                 data={**user_input, CONF_CONFIG_TYPE: "location"}
@@ -71,11 +71,11 @@ class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_zone(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Handle the zone step."""
-        errors = {}
+        errors: dict[str, str] = {}
         if user_input is not None:
-            zone = user_input[CONF_ZONE]
+            zone = user_input.get(CONF_ZONE)
             if zone not in ZONE_OPTIONS:
                 errors[CONF_ZONE] = "invalid_zone"
             else:
@@ -95,16 +95,22 @@ class VacancesScolairesConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors
         )
         
-    # Ajout de l'OptionsFlow pour modifier update_interval et verify_ssl après configuration
     @staticmethod
-    def async_get_options_flow(config_entry: config_entries.ConfigEntry) -> config_entries.OptionsFlow:
+    def async_get_options_flow(
+        config_entry: config_entries.ConfigEntry
+    ) -> config_entries.OptionsFlow:
         """Create the options flow."""
-        return VacancesScolairesOptionsFlowHandler()
-        
+        return VacancesScolairesOptionsFlowHandler(config_entry)
+
 class VacancesScolairesOptionsFlowHandler(config_entries.OptionsFlow):
     """Handle options flow for Vacances Scolaires."""
 
-    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        self.config_entry = config_entry
+
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Manage the options."""
         if user_input is not None:
             old_options = self.config_entry.options
@@ -112,13 +118,12 @@ class VacancesScolairesOptionsFlowHandler(config_entries.OptionsFlow):
             if user_input.get(CONF_VERIFY_SSL) != old_options.get(CONF_VERIFY_SSL, True):
                 _LOGGER.info(f"Option SSL changed from {old_options.get(CONF_VERIFY_SSL, True)} to {user_input.get(CONF_VERIFY_SSL)}")
 
-            if user_input.get(CONF_UPDATE_INTERVAL) != old_options.get(CONF_UPDATE_INTERVAL, self.config_entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)):
+            if user_input.get(CONF_UPDATE_INTERVAL) != old_options.get(CONF_UPDATE_INTERVAL,
+                self.config_entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)):
                 _LOGGER.info(f"Update interval changed from {old_options.get(CONF_UPDATE_INTERVAL, self.config_entry.data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL))} to {user_input.get(CONF_UPDATE_INTERVAL)}")
 
-            # Crée l'entrée avec les nouvelles options
             self.hass.config_entries.async_update_entry(self.config_entry, options=user_input)
 
-            # déclenche un reload automatique
             await self.hass.config_entries.async_reload(self.config_entry.entry_id)
             
             return self.async_create_entry(title="", data=user_input)
@@ -137,7 +142,7 @@ class VacancesScolairesOptionsFlowHandler(config_entries.OptionsFlow):
                     CONF_VERIFY_SSL,
                     default=self.config_entry.options.get(
                         CONF_VERIFY_SSL,
-                        self.config_entry.data.get(CONF_VERIFY_SSL, True)  # <-- c'est ici que tu choisis le défaut
+                        self.config_entry.data.get(CONF_VERIFY_SSL, True)
                     )
                 ): bool,
             })
