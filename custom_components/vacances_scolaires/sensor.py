@@ -69,7 +69,7 @@ class VacancesScolairesSensor(CoordinatorEntity, SensorEntity):
         self._attr_attribution = ATTRIBUTION
 
     @property
-    def state(self) -> str | None:
+    def native_value(self) -> str | None:
         """Return the state of the sensor."""
         return self.coordinator.data.get("state") if self.coordinator.data else None
 
@@ -116,7 +116,7 @@ class VacancesScolairesAujourdHuiSensor(CoordinatorEntity, SensorEntity):
         self._attr_attribution = ATTRIBUTION        
 
     @property
-    def state(self) -> str | None:
+    def native_value(self) -> str | None:
         """Return the state of the sensor."""
         if not self.coordinator.data:
             return None
@@ -162,7 +162,7 @@ class VacancesScolairesDemainSensor(CoordinatorEntity, SensorEntity):
         self._attr_attribution = ATTRIBUTION   
         
     @property
-    def state(self) -> str | None:
+    def native_value(self) -> str | None:
         """Return the state of the sensor."""
         if not self.coordinator.data:
             return None

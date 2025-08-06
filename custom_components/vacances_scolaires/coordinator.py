@@ -55,12 +55,15 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
             if self.options and CONF_UPDATE_INTERVAL in self.options
             else self.config.get(CONF_UPDATE_INTERVAL, 12)
         )
-        # Assurer que hours_val est un int
-        try:
-            hours_int = int(hours_val)
-        except Exception:
-            _LOGGER.warning("Invalid update interval value, using default 12 hours")
+
+        if hours_val is None:
             hours_int = 12
+        else:
+            try:
+                hours_int = int(hours_val)
+            except (ValueError, TypeError):
+                _LOGGER.warning(f"Valeur d'intervalle invalide ({hours_val}), utilisation de 12 heures par défaut")
+                hours_int = 12
 
         update_interval = timedelta(hours=hours_int)
 
