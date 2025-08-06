@@ -1,4 +1,9 @@
 colorlog
 homeassistant
 pip
+pytest-asyncio
+pytest
 ruff
+black
+mypy
+pylint
