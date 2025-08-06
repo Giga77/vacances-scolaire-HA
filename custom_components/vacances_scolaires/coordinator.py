@@ -14,7 +14,7 @@ from .const import DOMAIN, CONF_LOCATION, CONF_ZONE, CONF_CONFIG_TYPE, CONF_UPDA
 
 _LOGGER = logging.getLogger(__name__)
 
-def get_timezone(location):
+def get_timezone(location: str) -> str:
     timezone_mapping = {
         "Guadeloupe": "America/Guadeloupe",
         "Guyane": "America/Cayenne",
@@ -50,32 +50,50 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
         self.options = entry.options  # Options modifiables après configuration
 
         # Récupération dynamique de l'intervalle (options priorisées sur data)
-        update_interval = timedelta(
-            hours=(self.options.get(CONF_UPDATE_INTERVAL)
-                   if self.options and CONF_UPDATE_INTERVAL in self.options
-                   else self.config.get(CONF_UPDATE_INTERVAL, 12))
+        hours_val = (
+            self.options.get(CONF_UPDATE_INTERVAL)
+            if self.options and CONF_UPDATE_INTERVAL in self.options
+            else self.config.get(CONF_UPDATE_INTERVAL, 12)
         )
+
+        if hours_val is None:
+            hours_int = 12
+        else:
+            try:
+                hours_int = int(hours_val)
+            except (ValueError, TypeError):
+                _LOGGER.warning(f"Valeur d'intervalle invalide ({hours_val}), utilisation de 12 heures par défaut")
+                hours_int = 12
+
+        update_interval = timedelta(hours=hours_int)
+
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
 
     async def _async_update_data(self) -> dict[str, Any]:
         """Fetch data from API endpoint."""
-        # Récupérer verify_ssl depuis options ou data
         verify_ssl = self.entry.options.get(
             CONF_VERIFY_SSL,
             self.config.get(CONF_VERIFY_SSL, True)
         )
         _LOGGER.debug(f"Appel API avec verify_ssl={verify_ssl}")
-        today = date.today().isoformat()
+
+        today_str = date.today().isoformat()
         config_type = self.config.get(CONF_CONFIG_TYPE, "location")
+
         if config_type == "location":
-            location = self.config[CONF_LOCATION]
-            api_url = f"https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records?where=end_date%3E%22{today}%22&order_by=start_date%20ASC&limit=1&refine=location%3A{location}"
+            location = self.config.get(CONF_LOCATION)
+            api_url = (
+                f"https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/"
+                f"records?where=end_date%3E%22{today_str}%22&order_by=start_date%20ASC&limit=1&refine=location%3A{location}"
+            )
         elif config_type == "zone":
-            zone = self.config[CONF_ZONE]
-            api_url = f"https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/records?where=end_date%3E%22{today}%22&order_by=start_date%20ASC&limit=1&refine=zones%3A{zone}"
+            zone = self.config.get(CONF_ZONE)
+            api_url = (
+                f"https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-calendrier-scolaire/"
+                f"records?where=end_date%3E%22{today_str}%22&order_by=start_date%20ASC&limit=1&refine=zones%3A{zone}"
+            )
         else:
             raise UpdateFailed("Invalid configuration type")
-
 
         try:
             async with async_timeout.timeout(10):
@@ -89,28 +107,28 @@ class VacancesScolairesDataUpdateCoordinator(DataUpdateCoordinator):
                             raise UpdateFailed("No data received from API")
                         
                         result = data["results"][0]
-                        start_date = datetime.fromisoformat(result['start_date']).replace(tzinfo=ZoneInfo("UTC"))
-                        end_date = datetime.fromisoformat(result['end_date']).replace(tzinfo=ZoneInfo("UTC"))
+
+                        # Parse dates en datetime avec timezone UTC
+                        start_date_raw = datetime.fromisoformat(result['start_date']).replace(tzinfo=ZoneInfo("UTC"))
+                        end_date_raw = datetime.fromisoformat(result['end_date']).replace(tzinfo=ZoneInfo("UTC"))
+
                         today = datetime.now(ZoneInfo("UTC")).replace(hour=0, minute=0, second=0, microsecond=0)
-                        on_vacation = start_date <= today <= end_date
+                        on_vacation = start_date_raw <= today <= end_date_raw
 
-                        if on_vacation:
-                            state = f"{result['zones']} - Holidays"
-                        else:
-                            state = f"{result['zones']} - Work"
+                        state = f"{result['zones']} - Holidays" if on_vacation else f"{result['zones']} - Work"
 
-                        # Formatage des dates avec traduction des mois en français
-                        start_date_formatted = traduire_mois(start_date.strftime("%d %B %Y à %H:%M:%S %Z"))
-                        end_date_formatted = traduire_mois(end_date.strftime("%d %B %Y à %H:%M:%S %Z"))
+                        # Formatage des dates traduites
+                        start_date_formatted = traduire_mois(start_date_raw.strftime("%d %B %Y à %H:%M:%S %Z"))
+                        end_date_formatted = traduire_mois(end_date_raw.strftime("%d %B %Y à %H:%M:%S %Z"))
 
                         return {
                             "state": state,
-                            "start_date": start_date_formatted,  # Version traduite
-                            "end_date": end_date_formatted,  # Version traduite
+                            "start_date": start_date_formatted,
+                            "end_date": end_date_formatted,
                             "description": result['description'],
-                            "location": result['location'],
-                            "zone": result['zones'],
-                            "année_scolaire": result['annee_scolaire'],
+                            "location": result.get('location'),
+                            "zone": result.get('zones'),
+                            "année_scolaire": result.get('annee_scolaire'),
                             "on_vacation": on_vacation
                         }
         except aiohttp.ClientError as err:
