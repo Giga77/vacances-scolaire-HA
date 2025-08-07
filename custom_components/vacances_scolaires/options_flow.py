@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import Any
 import voluptuous as vol
 import logging
-from homeassistant.config_entries import ConfigFlowResult, OptionsFlowWithConfigEntry, ConfigEntry
+from homeassistant.config_entries import OptionsFlowWithConfigEntry, ConfigEntry
+from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
     CONF_UPDATE_INTERVAL,
@@ -57,4 +58,5 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlowWithConfigEntry):
                     )
                 ): bool,
             })
+
         )
