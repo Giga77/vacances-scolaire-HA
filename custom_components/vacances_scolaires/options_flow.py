@@ -14,7 +14,7 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-class VacancesScolairesOptionsFlowHandler(OptionsFlowWithConfigEntry):
+class VacancesScolairesOptionsFlowHandler(OptionsFlow):
 
     def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize options flow."""
@@ -61,4 +61,5 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlowWithConfigEntry):
             })
 
         )
+
 
