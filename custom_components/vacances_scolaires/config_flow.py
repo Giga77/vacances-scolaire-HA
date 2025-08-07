@@ -6,7 +6,7 @@ from homeassistant.core import callback
 from typing import Any
 import voluptuous as vol
 
-from homeassistant.config_entries import ConfigFlow, ConfigFlowResult, ConfigEntry
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult, ConfigEntry, OptionsFlow
 
 import logging
 
@@ -102,6 +102,7 @@ class VacancesScolairesConfigFlow(ConfigFlow, domain=DOMAIN):
         """Return the options flow handler."""
         from .options_flow import VacancesScolairesOptionsFlowHandler
         return VacancesScolairesOptionsFlowHandler(config_entry)
+
 
 
 
