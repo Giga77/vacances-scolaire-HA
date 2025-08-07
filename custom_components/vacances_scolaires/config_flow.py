@@ -6,7 +6,7 @@ from homeassistant.core import callback
 from typing import Any
 import voluptuous as vol
 
-from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult, ConfigEntry
 
 import logging
 
@@ -98,8 +98,10 @@ class VacancesScolairesConfigFlow(ConfigFlow, domain=DOMAIN):
         
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry):
+    def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow:
+        """Return the options flow handler."""
         from .options_flow import VacancesScolairesOptionsFlowHandler
         return VacancesScolairesOptionsFlowHandler(config_entry)
+
 
 
