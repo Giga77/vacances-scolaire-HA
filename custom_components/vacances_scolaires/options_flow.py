@@ -3,23 +3,15 @@ from __future__ import annotations
 from typing import Any
 import voluptuous as vol
 
-from homeassistant import config_entries
-from homeassistant.config_entries import ConfigFlow, ConfigFlowResult, OptionsFlowWithConfigEntry
-
-import logging
+from homeassistant.config_entries import ConfigFlowResult, OptionsFlowWithConfigEntry, ConfigEntry
 
 from .const import (
-    DOMAIN,
-    CONF_LOCATION,
-    CONF_ZONE,
     CONF_UPDATE_INTERVAL,
-    CONF_CONFIG_TYPE,
-    CONF_CREATE_CALENDAR,
-    DEFAULT_LOCATION,
     DEFAULT_UPDATE_INTERVAL,
     CONF_VERIFY_SSL,
-    ZONE_OPTIONS
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 class VacancesScolairesOptionsFlowHandler(OptionsFlowWithConfigEntry):
 
