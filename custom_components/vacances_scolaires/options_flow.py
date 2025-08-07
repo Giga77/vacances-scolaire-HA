@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 import voluptuous as vol
 import logging
-from homeassistant.config_entries import OptionsFlowWithConfigEntry, ConfigEntry
+from homeassistant.config_entries import OptionsFlow, ConfigEntry
 from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
@@ -18,11 +18,12 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlowWithConfigEntry):
 
     def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize options flow."""
-        super().__init__(config_entry)
+        super().__init__()
+        self.config_entry = config_entry 
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
-    ) -> ConfigFlowResult:
+    ) -> FlowResult:
         """Manage the options."""
         if user_input is not None:
             old_options = self.config_entry.options
@@ -60,3 +61,4 @@ class VacancesScolairesOptionsFlowHandler(OptionsFlowWithConfigEntry):
             })
 
         )
+
