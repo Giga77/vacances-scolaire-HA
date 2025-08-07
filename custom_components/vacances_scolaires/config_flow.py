@@ -99,9 +99,9 @@ class VacancesScolairesConfigFlow(ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow:
-        """Return the options flow handler."""
         from .options_flow import VacancesScolairesOptionsFlowHandler
         return VacancesScolairesOptionsFlowHandler(config_entry)
+
 
 
 
